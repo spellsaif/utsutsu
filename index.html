@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utsutsu 🌊 — Waking State Management for React</title>
+  <meta name="description" content="Simple to read. Explicit to update. Precise to re-render. A minimalist, type-safe, dependency-cached state management library for React.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+
+  <!-- Background Glowing Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Header Nav -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" stroke="url(#logo-grad)" stroke-width="6" fill="none"/>
+          <path d="M25 55C32 45 42 42 50 50C58 58 68 55 75 45" stroke="url(#logo-grad)" stroke-width="6" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00f2fe" />
+              <stop offset="100%" stop-color="#4facfe" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>utsutsu</span>
+      </a>
+      <nav>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#sandbox">Live Sandbox</a>
+        <a href="#comparison">Compare</a>
+        <a href="https://github.com/spellsaif/utsutsu" class="btn btn-secondary btn-sm" target="_blank">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <span class="badge-tag">Introducing Utsutsu (現)</span>
+      <h1 class="gradient-text">Waking State Management<br>for React</h1>
+      <p class="hero-subtitle">
+        An ultra-lightweight, type-safe state library. Enjoy the <strong>precision of Signals</strong> with the <strong>predictability of unidirectional data flows</strong>—without selector mess or boilerplate.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#sandbox" class="btn btn-primary">Try Interactive Sandbox</a>
+        <div class="npm-install-card" id="npm-copy-card">
+          <code>npm install utsutsu</code>
+          <button class="copy-btn" id="copy-npm-btn" title="Copy to clipboard">
+            <svg class="icon copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span class="copy-text">Copy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy & Core Concepts -->
+  <section class="section" id="philosophy">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Waking State of Your App</h2>
+        <p>In classical Japanese, <strong>Utsutsu (現)</strong> refers to reality and the waking world. We believe application state should be a direct, fully conscious reflection of truth—not a dream of nested complex abstractions.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon bg-cyan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
+          </div>
+          <h3>1. Cells (Atomic Reality)</h3>
+          <p>The smallest writable units of state. No proxy magic or obscure listeners. Just raw, predictable leaf nodes that hold the absolute truth.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon bg-violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </div>
+          <h3>2. Lenses (Reflections)</h3>
+          <p>Cached derived state that automatically tracks dependencies. active/passive lifecycles subscribe when components wake up, and sleep when they unmount.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon bg-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+          </div>
+          <h3>3. Intents (Waking Actions)</h3>
+          <p>State doesn't drift implicitly. It transitions via named Intents—explicit, predictable, and pure functions. Action and reducer in one line.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon bg-emerald">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+          </div>
+          <h3>4. Frames (Boundaries)</h3>
+          <p>Group multiple state updates inside a transactional frame. Subscribers are notified exactly once when the frame exits. 0 layout thrashing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Sandbox Simulator -->
+  <section class="section bg-card-glow" id="sandbox">
+    <div class="container">
+      <div class="section-header">
+        <h2>Interactive Performance Sandbox</h2>
+        <p>Witness how Utsutsu avoids selector noise and updates components with surgical precision. Toggle modes to compare the difference.</p>
+      </div>
+
+      <!-- Sandbox Panel -->
+      <div class="sandbox-container">
+        <!-- Interactive Controls & Mock App -->
+        <div class="sandbox-mock-app">
+          <div class="mock-header">
+            <span class="mock-dot red"></span>
+            <span class="mock-dot yellow"></span>
+            <span class="mock-dot green"></span>
+            <span class="mock-title">Mock React App Preview</span>
+            <div class="engine-toggle-container">
+              <span class="toggle-label" id="utsutsu-label">Utsutsu Mode</span>
+              <label class="switch">
+                <input type="checkbox" id="brittle-toggle">
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label text-muted" id="brittle-label">Brittle Selectors</span>
+            </div>
+          </div>
+             <div class="mock-body">
+            <!-- Header Component -->
+            <div class="mock-component component-header" id="comp-header">
+              <span class="render-badge" id="badge-header">Renders: 1</span>
+              <div class="component-title">Header Component</div>
+              <div class="flex-row">
+                <h3>⚔️ Isekai Party Dashboard</h3>
+                <span class="badge-status">Engine Online</span>
+              </div>
+            </div>
+
+            <div class="mock-grid">
+              <!-- Hero Stats Component -->
+              <div class="mock-component" id="comp-user">
+                <span class="render-badge" id="badge-user">Renders: 1</span>
+                <div class="component-title">Hero Card Component <span class="tag-lens">reads heroLens</span></div>
+                <div class="profile-card">
+                  <div class="avatar rpg-avatar">🧝</div>
+                  <div>
+                    <h4 id="hero-display-name">Rimuru Tempest</h4>
+                    <small>Level <span id="hero-level-val">35</span> • <span id="hero-hp-val">1200</span> HP</small>
+                  </div>
+                </div>
+                <div class="card-action">
+                  <button class="btn btn-sm btn-primary" id="rename-btn">Train (Level Up)</button>
+                  <button class="btn btn-sm btn-secondary" id="rest-hero-btn">Rest (Heal)</button>
+                </div>
+              </div>
+
+              <!-- Mana Gauge Component -->
+              <div class="mock-component" id="comp-todos">
+                <span class="render-badge" id="badge-todos">Renders: 1</span>
+                <div class="component-title">Mana Gauge Component <span class="tag-lens">reads manaLens</span></div>
+                
+                <div class="mana-container">
+                  <div class="mana-label-row">
+                    <span>Active Mana Pool</span>
+                    <strong id="mana-percent-val">85%</strong>
+                  </div>
+                  <div class="mana-bar-outer">
+                    <div class="mana-bar-inner" id="mana-bar-fill" style="width: 85%;"></div>
+                  </div>
+                </div>
+
+                <div class="card-action">
+                  <button class="btn btn-sm btn-primary" id="todo-add-btn">Cast (Explosion!)</button>
+                  <button class="btn btn-sm btn-secondary" id="channel-mana-btn">Channel Mana</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity Monitor -->
+            <div class="mock-component" id="comp-log">
+              <span class="render-badge" id="badge-log">Renders: 1</span>
+              <div class="component-title">Activity Monitor Component <span class="tag-lens">reads logsLens</span></div>
+              <div class="log-info">
+                <span>System Operations Executed: <strong id="log-count-val">2</strong></span>
+                <button class="btn btn-xs btn-outline" id="frame-batch-btn">Run Ultimate (Batched Frame: Restores all + Channels)</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Live Code and State Tree -->
+        <div class="sandbox-visualizer">
+          <div class="visualizer-tabs">
+            <button class="v-tab active" data-target="tab-state">Live State Tree</button>
+            <button class="v-tab" data-target="tab-code">Utsutsu Code</button>
+          </div>
+
+          <!-- Live State Tree Panel -->
+          <div class="v-panel active" id="tab-state">
+            <pre><code class="language-json" id="state-json-view">
+{
+  "hero": {
+    "name": "Rimuru",
+    "level": 35,
+    "hp": 1200
+  },
+  "mana": 85,
+  "logs": 2
+}
+            </code></pre>
+            <div class="visualizer-hint">
+              <span>💡 Try leveling up Rimuru or casting Explosion. In <strong>Utsutsu Mode</strong>, notice that only the components reading that specific slice re-render (their count increases). Toggle <strong>Brittle Mode</strong> to see how standard libraries re-evaluate everything on any change.</span>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="v-panel" id="tab-code">
+            <pre><code class="language-javascript">
+// 1. Define atomic state
+const store = createUtsutsu({
+  hero: { name: "Rimuru", level: 35, hp: 1200 },
+  mana: 85,
+  logs: 2
+});
+
+// 2. Define derived read-only Lenses
+const heroLens = store.lens("heroStats", s => s.hero);
+const manaLens = store.lens("manaPool", s => s.mana);
+const logsLens = store.lens("systemLogs", s => s.logs);
+
+// 3. Define mutators (Intents)
+const trainHero = store.intent("train", s => ({
+  ...s,
+  hero: { ...s.hero, level: s.hero.level + 1 },
+  logs: s.logs + 1
+}));
+
+const castSpell = store.intent("cast", s => ({
+  ...s,
+  mana: Math.max(0, s.mana - 30),
+  logs: s.logs + 1
+}));
+            </code></pre>
+          </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Comparison -->
+  <section class="section" id="code-compare">
+    <div class="container">
+      <div class="section-header">
+        <h2>Comparison: Utsutsu vs Others</h2>
+        <p>No selectors at the hook site. Define your lenses once, let Utsutsu manage the dependency tree.</p>
+      </div>
+
+      <div class="comparison-tabs-container">
+        <div class="tabs-header">
+          <button class="c-tab active" data-lib="utsutsu">Utsutsu Way 🌊</button>
+          <button class="c-tab" data-lib="zustand">Zustand Way 🐻</button>
+          <button class="c-tab" data-lib="redux">Redux Toolkit 🛠️</button>
+        </div>
+
+        <div class="tabs-body">
+          <!-- Utsutsu Code -->
+          <div class="c-panel active" id="code-utsutsu">
+            <pre><code class="language-typescript">
+// store.ts
+import { createUtsutsu } from "utsutsu";
+
+export const store = createUtsutsu({
+  hero: { name: "Rimuru", level: 35, hp: 1200 },
+  mana: 85
+});
+
+// Derived states are Lenses—evaluated once and cached
+export const powerLens = store.lens("power", s => 
+  s.hero.level * 100 + s.mana
+);
+
+export const trainHero = store.intent("train", s => ({
+  ...s,
+  hero: { ...s.hero, level: s.hero.level + 1 }
+}));
+
+// Component.tsx
+import { useValue } from "utsutsu";
+import { powerLens, trainHero } from "./store";
+
+function HeroBadge() {
+  // ✅ Subscribes directly to the Lens. Rerenders ONLY when calculated power changes!
+  const power = useValue(powerLens);
+  return <button onClick={trainHero}>Power Rating: {power}</button>;
+}
+            </code></pre>
+          </div>
+
+          <!-- Zustand Code -->
+          <div class="c-panel" id="code-zustand">
+            <pre><code class="language-typescript">
+// store.ts
+import { create } from "zustand";
+
+interface RPGState {
+  hero: { name: string; level: number; hp: number };
+  mana: number;
+  trainHero: () => void;
+}
+
+export const useRPGStore = create<RPGState>((set) => ({
+  hero: { name: "Rimuru", level: 35, hp: 1200 },
+  mana: 85,
+  trainHero: () => set(s => ({
+    hero: { ...s.hero, level: s.hero.level + 1 }
+  }))
+}));
+
+// Component.tsx
+import { useRPGStore } from "./store";
+
+function HeroBadge() {
+  // ⚠️ Rerenders whenever ANY mana or hp value in the store changes
+  // unless you write complex custom slice selectors/shallow checkers!
+  const hero = useRPGStore(s => s.hero);
+  const mana = useRPGStore(s => s.mana);
+  const power = hero.level * 100 + mana;
+  
+  const trainHero = useRPGStore(s => s.trainHero);
+  return <button onClick={trainHero}>Power Rating: {power}</button>;
+}
+            </code></pre>
+          </div>
+
+          <!-- Redux Toolkit Code -->
+          <div class="c-panel" id="code-redux">
+            <pre><code class="language-typescript">
+// slice.ts
+import { createSlice } from "@reduxjs/toolkit";
+
+const rpgSlice = createSlice({
+  name: "rpg",
+  initialState: {
+    hero: { name: "Rimuru", level: 35, hp: 1200 },
+    mana: 85
+  },
+  reducers: {
+    trainHero: (state) => {
+      state.hero.level += 1;
+    }
+  }
+});
+
+// selector.ts
+import { createSelector } from "reselect";
+export const selectPower = createSelector(
+  (state: RootState) => state.rpg.hero,
+  (state: RootState) => state.rpg.mana,
+  (hero, mana) => hero.level * 100 + mana
+);
+
+// Component.tsx
+import { useDispatch, useSelector } from "react-redux";
+import { selectPower, rpgSlice } from "./slice";
+
+function HeroBadge() {
+  const dispatch = useDispatch();
+  // ⚠️ High boilerplate: Requires Slice, Reducers, Reselect selectors, dispatch hook, and context wrappers
+  const power = useSelector(selectPower);
+  return (
+    <button onClick={() => dispatch(rpgSlice.actions.trainHero())}>
+      Power Rating: {power}
+    </button>
+  );
+}
+            </code></pre>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Comparison Matrix -->
+  <section class="section" id="comparison">
+    <div class="container">
+      <div class="section-header">
+        <h2>Comparison Matrix</h2>
+        <p>A structural look at how Utsutsu compares with the industry leaders.</p>
+      </div>
+
+      <div class="table-container">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Redux Toolkit</th>
+              <th>Zustand</th>
+              <th>Jotai</th>
+              <th class="highlight">Utsutsu 🌊</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Boilerplate</strong></td>
+              <td>High</td>
+              <td>Low</td>
+              <td>Medium</td>
+              <td class="highlight"><strong>Very Low</strong></td>
+            </tr>
+            <tr>
+              <td><strong>State Structure</strong></td>
+              <td>Single Tree</td>
+              <td>Single Tree</td>
+              <td>Distributed Atoms</td>
+              <td class="highlight"><strong>Single Tree + Slices</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Re-render Control</strong></td>
+              <td>Manual Selectors</td>
+              <td>Selector Hooks</td>
+              <td>Atom Subscriptions</td>
+              <td class="highlight"><strong>Automatic Lens Graph</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Update Path</strong></td>
+              <td>Dispatch Actions</td>
+              <td>Direct Mutators</td>
+              <td>Atom Setters</td>
+              <td class="highlight"><strong>Explicit Intents</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Update Batching</strong></td>
+              <td>Middleware</td>
+              <td>Auto-batched</td>
+              <td>Auto-batched</td>
+              <td class="highlight"><strong>Transaction Frames</strong></td>
+            </tr>
+            <tr>
+              <td><strong>DevTools</strong></td>
+              <td>Native</td>
+              <td>Middleware</td>
+              <td>Hooks</td>
+              <td class="highlight"><strong>Native Adapter</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Library Size</strong></td>
+              <td>~30kB</td>
+              <td>~3kB</td>
+              <td>~8kB</td>
+              <td class="highlight"><strong>&lt; 1.5kB</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <p>&copy; 2026 Utsutsu Authors. Released under the MIT License.</p>
+      <div class="footer-links">
+        <a href="https://github.com/spellsaif/utsutsu" target="_blank">GitHub</a>
+        <a href="https://github.com/spellsaif/utsutsu/blob/main/LICENSE" target="_blank">License</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
