@@ -1,14 +1,18 @@
-// 🌊 Utsutsu Landing Page Zen Garden Simulator & Documentation Controller
+// 🌊 Utsutsu Landing Page Cyber-Fantasy Simulator & Documentation Controller
 
-// 1. Initial State (Zen Garden Theme)
+// 1. Initial State (Isekai Cyber RPG Theme)
 let state = {
-  pond: {
-    ripples: 0,
-    still: true
+  hero: {
+    name: "Rimuru Tempest",
+    level: 35,
+    hp: 1200
   },
-  stones: 5,
-  meditations: 0
+  mana: 85,
+  logs: 2
 };
+
+// Max values for mock validation
+const HERO_MAX_HP = 1500;
 
 // 2. Component Render Counters
 let renderCounts = {
@@ -35,20 +39,21 @@ const DOM = {
   compTodos: document.getElementById("comp-todos"),
   compLog: document.getElementById("comp-log"),
 
-  // Zen garden nodes
-  rippleCountVal: document.getElementById("ripple-count-val"),
-  pondWaterBg: document.getElementById("pond-water-bg"),
-  pondStatusText: document.getElementById("pond-status-text"),
-  stoneCountVal: document.getElementById("stone-count-val"),
+  // RPG Stat Nodes
+  heroDisplayName: document.getElementById("hero-display-name"),
+  heroLevelVal: document.getElementById("hero-level-val"),
+  heroHpVal: document.getElementById("hero-hp-val"),
+  manaPercentVal: document.getElementById("mana-percent-val"),
+  manaBarFill: document.getElementById("mana-bar-fill"),
   logCountVal: document.getElementById("log-count-val"),
   stateJsonView: document.getElementById("state-json-view"),
 
   // Control Buttons
-  arrangeBtn: document.getElementById("rename-btn"),
-  addStoneBtn: document.getElementById("rest-hero-btn"),
-  dropPebbleBtn: document.getElementById("todo-add-btn"),
-  calmBtn: document.getElementById("channel-mana-btn"),
-  rakeBtn: document.getElementById("frame-batch-btn"),
+  trainBtn: document.getElementById("rename-btn"),
+  restBtn: document.getElementById("rest-hero-btn"),
+  castBtn: document.getElementById("todo-add-btn"),
+  channelBtn: document.getElementById("channel-mana-btn"),
+  ultimateBtn: document.getElementById("frame-batch-btn"),
   
   // Switch
   brittleToggle: document.getElementById("brittle-toggle"),
@@ -62,31 +67,25 @@ const DOM = {
 
 // --- Render Operations ---
 function renderHeader() {
-  DOM.badgeHeader.textContent = `Updates: ${renderCounts.header}`;
+  DOM.badgeHeader.textContent = `Renders: ${renderCounts.header}`;
 }
 
-function renderStones() {
-  DOM.stoneCountVal.textContent = state.stones;
-  DOM.badgeUser.textContent = `Updates: ${renderCounts.user}`;
+function renderHero() {
+  DOM.heroDisplayName.textContent = state.hero.name;
+  DOM.heroLevelVal.textContent = state.hero.level;
+  DOM.heroHpVal.textContent = state.hero.hp;
+  DOM.badgeUser.textContent = `Renders: ${renderCounts.user}`;
 }
 
-function renderPond() {
-  DOM.rippleCountVal.textContent = state.pond.ripples;
-  
-  if (state.pond.still) {
-    DOM.pondWaterBg.classList.remove("rippling");
-    DOM.pondStatusText.textContent = "Still Water";
-  } else {
-    DOM.pondWaterBg.classList.add("rippling");
-    DOM.pondStatusText.textContent = `Ripples Active (${state.pond.ripples})`;
-  }
-  
-  DOM.badgeTodos.textContent = `Updates: ${renderCounts.todos}`;
+function renderMana() {
+  DOM.manaPercentVal.textContent = `${state.mana}%`;
+  DOM.manaBarFill.style.width = `${state.mana}%`;
+  DOM.badgeTodos.textContent = `Renders: ${renderCounts.todos}`;
 }
 
 function renderLogs() {
-  DOM.logCountVal.textContent = state.meditations;
-  DOM.badgeLog.textContent = `Updates: ${renderCounts.log}`;
+  DOM.logCountVal.textContent = state.logs;
+  DOM.badgeLog.textContent = `Renders: ${renderCounts.log}`;
 }
 
 // Visual Highlight State Tree Update with Syntax Coloring
@@ -121,19 +120,19 @@ function updateStateTreeJson(highlightKey) {
 
   // Apply visual highlight class for key-change flash
   if (highlightKey) {
-    if (highlightKey === "pond") {
+    if (highlightKey === "hero") {
       jsonString = jsonString.replace(
-        /(<span class="json-key">"pond"<\/span>: {[\s\S]*?})/g,
+        /(<span class="json-key">"hero"<\/span>: {[\s\S]*?})/g,
         `<span class="json-key-changed">$1</span>`
       );
-    } else if (highlightKey === "stones") {
+    } else if (highlightKey === "mana") {
       jsonString = jsonString.replace(
-        /(<span class="json-key">"stones"<\/span>: <span class="json-number">\d+<\/span>)/g,
+        /(<span class="json-key">"mana"<\/span>: <span class="json-number">\d+<\/span>)/g,
         `<span class="json-key-changed">$1</span>`
       );
-    } else if (highlightKey === "meditations") {
+    } else if (highlightKey === "logs") {
       jsonString = jsonString.replace(
-        /(<span class="json-key">"meditations"<\/span>: <span class="json-number">\d+<\/span>)/g,
+        /(<span class="json-key">"logs"<\/span>: <span class="json-number">\d+<\/span>)/g,
         `<span class="json-key-changed">$1</span>`
       );
     }
@@ -167,8 +166,8 @@ function dispatchUpdate(updatedComponentKeys) {
     flashComponent(DOM.compLog);
     
     renderHeader();
-    renderStones();
-    renderPond();
+    renderHero();
+    renderMana();
     renderLogs();
   } else {
     // 🌊 Utsutsu Mode: Precision dependency evaluation
@@ -177,10 +176,10 @@ function dispatchUpdate(updatedComponentKeys) {
       
       if (key === "user") {
         flashComponent(DOM.compUser);
-        renderStones();
+        renderHero();
       } else if (key === "todos") {
         flashComponent(DOM.compTodos);
-        renderPond();
+        renderMana();
       } else if (key === "log") {
         flashComponent(DOM.compLog);
         renderLogs();
@@ -189,53 +188,55 @@ function dispatchUpdate(updatedComponentKeys) {
   }
 }
 
-// Action: Arrange Stones
-function arrangeStones() {
-  state.meditations += 1;
-  dispatchUpdate(["log"]);
-  updateStateTreeJson("meditations");
-}
-
-// Action: Add Stone
-function addStone() {
-  state.stones += 1;
-  state.meditations += 1;
+// Action: Train (Level Up)
+function trainHero() {
+  state.hero.level += 1;
+  state.logs += 1;
   
   dispatchUpdate(["user", "log"]);
-  updateStateTreeJson("stones");
+  updateStateTreeJson("hero");
 }
 
-// Action: Drop Pebble
-function dropPebble() {
-  state.pond.ripples += 1;
-  state.pond.still = false;
-  state.meditations += 1;
+// Action: Rest (Heal HP)
+function restHero() {
+  state.hero.hp = Math.min(HERO_MAX_HP, state.hero.hp + 100);
+  state.logs += 1;
+  
+  dispatchUpdate(["user", "log"]);
+  updateStateTreeJson("hero");
+}
+
+// Action: Cast (Explosion!)
+function castExplosion() {
+  if (state.mana >= 25) {
+    state.mana -= 25;
+    state.hero.hp = Math.max(0, state.hero.hp - 50); // slight self-recoil
+    state.logs += 1;
+    
+    dispatchUpdate(["todos", "user", "log"]);
+    updateStateTreeJson("mana");
+  } else {
+    alert("Mana depleted! Cannot trigger spell casting.");
+  }
+}
+
+// Action: Channel Mana
+function channelMana() {
+  state.mana = Math.min(100, state.mana + 15);
+  state.logs += 1;
   
   dispatchUpdate(["todos", "log"]);
-  updateStateTreeJson("pond");
+  updateStateTreeJson("mana");
 }
 
-// Action: Calm Pond
-function calmPond() {
-  state.pond.ripples = 0;
-  state.pond.still = true;
-  state.meditations += 1;
+// Action: Run ultimate batched transaction frame
+function runUltimateBatch() {
+  state.hero.hp = HERO_MAX_HP;
+  state.mana = 100;
+  state.logs += 1;
   
-  dispatchUpdate(["todos", "log"]);
-  updateStateTreeJson("pond");
-}
-
-// Action: Rake Garden (Batched Transaction Frame)
-function rakeGarden() {
-  // Simulates a single frame tick grouping multiple state modifications
-  state.pond.ripples = 0;
-  state.pond.still = true;
-  state.stones = 5; // Resets arrangement
-  state.meditations += 1;
-  
-  // Subscribers are updated exactly once at the end of the tick
-  dispatchUpdate(["todos", "user", "log"]);
-  updateStateTreeJson("pond");
+  dispatchUpdate(["user", "todos", "log"]);
+  updateStateTreeJson("hero");
 }
 
 // Toggle Mode Selection
@@ -275,7 +276,6 @@ document.querySelectorAll(".docs-nav-btn").forEach(btn => {
     const targetChapter = document.getElementById(`chap-${e.currentTarget.dataset.chapter}`);
     if (targetChapter) {
       targetChapter.classList.add("active");
-      // Scroll content section slightly into view if on mobile screen size
       if (window.innerWidth <= 768) {
         targetChapter.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -297,16 +297,16 @@ DOM.copyNpmBtn.addEventListener("click", () => {
 });
 
 // --- Initialize Event Listeners ---
-DOM.arrangeBtn.addEventListener("click", arrangeStones);
-DOM.addStoneBtn.addEventListener("click", addStone);
-DOM.dropPebbleBtn.addEventListener("click", dropPebble);
-DOM.calmBtn.addEventListener("click", calmPond);
-DOM.rakeBtn.addEventListener("click", rakeGarden);
+DOM.trainBtn.addEventListener("click", trainHero);
+DOM.restBtn.addEventListener("click", restHero);
+DOM.castBtn.addEventListener("click", castExplosion);
+DOM.channelBtn.addEventListener("click", channelMana);
+DOM.ultimateBtn.addEventListener("click", runUltimateBatch);
 DOM.brittleToggle.addEventListener("change", handleEngineToggle);
 
 // --- Boot Application ---
 renderHeader();
-renderStones();
-renderPond();
+renderHero();
+renderMana();
 renderLogs();
 updateStateTreeJson();
