@@ -575,7 +575,7 @@ export function createPersistentStore&lt;T extends object&gt;(key: string, defau
 
   // 3. Listen for changes and write back to storage
   store.subscribe(() => {
-    localStorage.setItem(key, JSON.stringify(store.state));
+    localStorage.setItem(key, JSON.stringify(store.get()));
   });
 
   return store;
