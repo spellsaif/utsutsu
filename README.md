@@ -1,6 +1,12 @@
-# Utsutsu 🌊
+<p align="center">
+  <img src="logo.svg" alt="Utsutsu Logo" width="128" height="128" />
+</p>
 
-> **Simple to read. Explicit to update. Precise to re-render.**
+<h1 align="center">Utsutsu 🌊</h1>
+
+<p align="center">
+  <strong>Simple to read. Explicit to update. Precise to re-render.</strong>
+</p>
 
 Utsutsu is an ultra-lightweight, type-safe state management library designed specifically for React. It is engineered to give you the **precision of Signals** with the **predictability of unidirectional data flows**—without the boilerplate of Redux or the selector mess of Zustand.
 
