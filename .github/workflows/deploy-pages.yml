@@ -1,0 +1,27 @@
+name: Deploy Example Landing Page to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'example/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages Branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: example # The folder containing the landing page code
+          branch: gh-pages # The target branch that GitHub Pages will serve from
