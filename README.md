@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="logo.svg" alt="Utsutsu Logo" width="128" height="128" />
+  <img src="logo.png" alt="Utsutsu Logo" width="128" height="128" style="border-radius: 24px;" />
 </p>
 
-<h1 align="center">Utsutsu 🌊</h1>
+<h1 align="center">Utsutsu 🧝</h1>
 
 <p align="center">
   <strong>Simple to read. Explicit to update. Precise to re-render.</strong>
@@ -75,7 +75,7 @@ function TodoCount() {
 }
 ```
 
-### The Utsutsu Way 🌊
+### The Utsutsu Way 🧝
 ```ts
 // store.ts
 import { createUtsutsu } from "utsutsu";
