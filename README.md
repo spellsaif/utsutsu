@@ -6,6 +6,24 @@ Utsutsu is an ultra-lightweight, type-safe state management library designed spe
 
 ---
 
+## 🌊 The Philosophy of Utsutsu (現)
+
+In classical Japanese, **Utsutsu (現)** refers to **reality, the waking world, and the state of being fully conscious**—as opposed to dreams, illusions, or shadows. 
+
+Modern React state management often traps developers in a dream-like state of complex abstractions:
+*   We write boilerplate (Reducers, Action Creators, Slices) to describe simple changes.
+*   We write complex, brittle selectors (`state => state.todos.filter(...)`) hoping they won't cause unexpected re-render loops when they evaluate incorrectly.
+*   We let states update in fragmented, erratic waves, losing track of transaction boundaries.
+
+**Utsutsu** is designed to bring your application state back to the waking world:
+1.  **State is Reality (Cells)**: No magic proxies or heavy wrappers. Just raw, atomic, predictable values that store the absolute truth.
+2.  **Views are Direct Reflections (Lenses)**: Lenses are static, pure functions that cache their calculations. They subscribe and unsubscribe on-demand only when components wake up (active rendering) and rest when they sleep (unmounted).
+3.  **Updates are Waking Actions (Intents)**: State doesn't shift implicitly. It shifts only when a named **Intent** is explicitly dispatched, representing a clear transaction in reality.
+
+Utsutsu is state management stripped of dream-like illusions—designed to be direct, transparent, and awake.
+
+---
+
 ## ✨ Why You'll Love Utsutsu
 
 Most React state libraries force you to choose between two architectural evils:
