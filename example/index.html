@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Utsutsu 🌊 — Waking State Management for React</title>
+  <title>Utsutsu 🌊 — Advanced Reactive State Management for React</title>
   <meta name="description" content="Simple to read. Explicit to update. Precise to re-render. A minimalist, type-safe, dependency-cached state management library for React.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 </head>
@@ -35,9 +35,10 @@
         <span>utsutsu</span>
       </a>
       <nav>
-        <a href="#philosophy">Philosophy</a>
-        <a href="#sandbox">Interactive HUD</a>
-        <a href="#docs">Documentation</a>
+        <a href="#portal" class="nav-tab-btn active" data-tab="tab-hud-section">Interactive HUD</a>
+        <a href="#portal" class="nav-tab-btn" data-tab="tab-guide-section">Core Guidebook</a>
+        <a href="#portal" class="nav-tab-btn" data-tab="tab-recipes-section">Scenario Recipes</a>
+        <a href="#portal" class="nav-tab-btn" data-tab="tab-api-section">API Reference</a>
         <a href="https://github.com/spellsaif/utsutsu" class="btn btn-secondary btn-sm" target="_blank">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
           GitHub
@@ -50,14 +51,14 @@
   <section class="hero">
     <div class="container hero-content">
       <span class="badge-tag">Waking State Engine • Version 1.0</span>
-      <h1 class="gradient-text">Precise React State.<br>Zero Selector Noise.</h1>
+      <h1 class="gradient-text">Unidirectional Flow.<br>Surgical Reactive Speed.</h1>
       <p class="hero-subtitle">
-        Enjoy the surgical performance of Signals with the clean, unidirectional structure of Redux. A type-safe React state library in less than 1.5kB.
+        Utsutsu brings the raw efficiency of Signals to React, wrapped inside a predictable, unidirectional Redux-style intent design. Fully type-safe and under 1.5kB.
       </p>
 
       <div class="hero-actions">
-        <a href="#docs" class="btn btn-primary">Read the Manual</a>
-        <div class="npm-install-card" id="npm-copy-card">
+        <a href="#portal" class="btn btn-primary" id="explore-docs-btn">Explore Documentation</a>
+        <div class="npm-install-card">
           <code>npm install utsutsu</code>
           <button class="copy-btn" id="copy-npm-btn" title="Copy to clipboard">
             <svg class="icon copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -68,561 +69,592 @@
     </div>
   </section>
 
-  <!-- Philosophy & Core Concepts -->
-  <section class="section" id="philosophy">
+  <!-- Main Portal Section -->
+  <section class="section" id="portal">
     <div class="container">
-      <div class="section-header">
-        <h2>Architectural Pillars</h2>
-        <p>Utsutsu (現) translates to "the waking world." We keep state transparent, updates traceably explicit, and re-renders surgically minimal.</p>
-      </div>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon bg-cyan-glow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
-          </div>
-          <h3>Cells (Reality)</h3>
-          <p>Atomic, readable state values. Simple leaf elements of truth that bypass heavy proxy observation systems.</p>
+      
+      <!-- TAB 1: INTERACTIVE SUMMONING HUD -->
+      <div class="portal-tab-content active" id="tab-hud-section">
+        <div class="section-header">
+          <h2>RPG Summoning HUD</h2>
+          <p>Experiment with character spells below. Toggle between Utsutsu and Brittle Mode to observe how Cells surgically limit React rendering.</p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon bg-blue-glow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          </div>
-          <h3>Lenses (Reflections)</h3>
-          <p>Cached derived state nodes that automatically track dependencies. They wake up on mount and sleep on unmount.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon bg-violet-glow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-          </div>
-          <h3>Intents (Conscious Actions)</h3>
-          <p>Pure state transactions. State doesn't shift implicitly; it transitions strictly via named, trace-ready intents.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon bg-emerald-glow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
-          </div>
-          <h3>Frames (Boundaries)</h3>
-          <p>Create transactional batch boundaries. UI re-renders exactly once when the frame exits. Zero lay-out flickering.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Sandbox Simulator: Cyber Isekai HUD -->
-  <section class="section bg-card-glow" id="sandbox">
-    <div class="container">
-      <div class="section-header">
-        <h2>Interactive Mana Engine</h2>
-        <p>Trigger actions in the spellcaster dashboard. Notice how components re-render with target precision. Toggle modes to see the difference.</p>
-      </div>
-
-      <div class="sandbox-container">
-        <!-- Dashboard Mock App -->
-        <div class="sandbox-mock-app">
-          <div class="mock-header">
-            <span class="mock-dot red"></span>
-            <span class="mock-dot yellow"></span>
-            <span class="mock-dot green"></span>
-            <span class="mock-title">Isekai Spellcaster HUD</span>
-            <div class="engine-toggle-container">
-              <span class="toggle-label" id="utsutsu-label">Utsutsu Mode</span>
-              <label class="switch">
-                <input type="checkbox" id="brittle-toggle">
-                <span class="slider round"></span>
-              </label>
-              <span class="toggle-label text-muted" id="brittle-label">Brittle Selectors</span>
+        <div class="sandbox-container">
+          <!-- Summoning HUD Dashboard -->
+          <div class="sandbox-mock-app">
+            <div class="mock-header">
+              <span class="mock-dot red"></span>
+              <span class="mock-dot yellow"></span>
+              <span class="mock-dot green"></span>
+              <span class="mock-title">Summon Sanctuary Console</span>
+              <div class="engine-toggle-container">
+                <span class="toggle-label" id="utsutsu-label">Utsutsu Precise</span>
+                <label class="switch">
+                  <input type="checkbox" id="brittle-toggle">
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label text-muted" id="brittle-label">Brittle Selectors</span>
+              </div>
             </div>
-          </div>
-          <div class="mock-body">
             
-            <!-- Core environment component -->
-            <div class="mock-component component-header" id="comp-header">
-              <span class="render-badge" id="badge-header">Renders: 1</span>
-              <div class="component-title">Mana Core Status <span class="tag-lens">reads themeLens</span></div>
-              <div class="flex-row">
-                <h3>🔮 Isekai Spellcaster Dashboard</h3>
-                <span class="badge-status">System Synced</span>
-              </div>
-            </div>
-
-            <div class="mock-grid">
-              <!-- Hero Stats Component -->
-              <div class="mock-component" id="comp-user">
-                <span class="render-badge" id="badge-user">Renders: 1</span>
-                <div class="component-title">Hero Status Card <span class="tag-lens">reads heroLens</span></div>
-                <div class="profile-card">
-                  <div class="avatar rpg-avatar">🧝</div>
-                  <div>
-                    <h4 id="hero-display-name">Rimuru Tempest</h4>
-                    <small>Level <span id="hero-level-val">35</span> • <span id="hero-hp-val">1200</span> HP</small>
-                  </div>
-                </div>
-                <div class="card-action">
-                  <button class="btn btn-sm btn-primary" id="rename-btn">Train (Level Up)</button>
-                  <button class="btn btn-sm btn-secondary" id="rest-hero-btn">Rest (Heal)</button>
+            <div class="mock-body">
+              <!-- HUD System Status -->
+              <div class="mock-component component-header" id="comp-header">
+                <span class="render-badge" id="badge-header">Renders: 1</span>
+                <div class="component-title">Mana Regulator Status <span class="tag-lens">reads themeLens</span></div>
+                <div class="flex-row">
+                  <h3>⚡ Summoning Core Panel</h3>
+                  <span class="badge-status" id="system-status-text">Synchronized</span>
                 </div>
               </div>
 
-              <!-- Magic Core Component -->
-              <div class="mock-component" id="comp-todos">
-                <span class="render-badge" id="badge-todos">Renders: 1</span>
-                <div class="component-title">Mana Regulator <span class="tag-lens">reads manaLens</span></div>
+              <!-- Hero Grid -->
+              <div class="hud-heroes-grid">
                 
-                <div class="mana-container">
-                  <div class="mana-label-row">
-                    <span>Active Mana Pool</span>
-                    <strong id="mana-percent-val">85%</strong>
+                <!-- Hero 1: Rimuru -->
+                <div class="mock-component hero-card" id="comp-rimuru">
+                  <span class="render-badge" id="badge-rimuru">Renders: 1</span>
+                  <div class="component-title">Rimuru Tempest <span class="tag-lens">reads rimuruLens</span></div>
+                  <div class="hero-header-row">
+                    <span class="hero-avatar-icon">🧝</span>
+                    <div>
+                      <h4>Rimuru Tempest</h4>
+                      <small class="hero-level-text">Level <span id="rimuru-level-val">35</span></small>
+                    </div>
                   </div>
-                  <div class="mana-bar-outer">
-                    <div class="mana-bar-inner" id="mana-bar-fill" style="width: 85%;"></div>
+                  <div class="hud-stats-bars">
+                    <div class="stat-bar-row">
+                      <span>HP: <strong id="rimuru-hp-val">1200</strong>/1500</span>
+                      <div class="bar-outer"><div class="bar-inner hp" id="rimuru-hp-bar" style="width: 80%;"></div></div>
+                    </div>
+                    <div class="stat-bar-row">
+                      <span>MP: <strong id="rimuru-mp-val">85</strong>%</span>
+                      <div class="bar-outer"><div class="bar-inner mp" id="rimuru-mp-bar" style="width: 85%;"></div></div>
+                    </div>
+                  </div>
+                  <div class="card-action">
+                    <button class="btn btn-sm btn-primary" id="btn-train-rimuru">Train</button>
+                    <button class="btn btn-sm btn-secondary" id="btn-predate-rimuru">Predate (Heal)</button>
                   </div>
                 </div>
 
-                <div class="card-action">
-                  <button class="btn btn-sm btn-primary" id="todo-add-btn">Cast (Explosion!)</button>
-                  <button class="btn btn-sm btn-secondary" id="channel-mana-btn">Channel Mana</button>
+                <!-- Hero 2: Megumin -->
+                <div class="mock-component hero-card" id="comp-megumin">
+                  <span class="render-badge" id="badge-megumin">Renders: 1</span>
+                  <div class="component-title">Megumin <span class="tag-lens">reads meguminLens</span></div>
+                  <div class="hero-header-row">
+                    <span class="hero-avatar-icon">🧙</span>
+                    <div>
+                      <h4>Megumin</h4>
+                      <small class="hero-level-text">Level <span id="megumin-level-val">24</span></small>
+                    </div>
+                  </div>
+                  <div class="hud-stats-bars">
+                    <div class="stat-bar-row">
+                      <span>HP: <strong id="megumin-hp-val">600</strong>/800</span>
+                      <div class="bar-outer"><div class="bar-inner hp" id="megumin-hp-bar" style="width: 75%;"></div></div>
+                    </div>
+                    <div class="stat-bar-row">
+                      <span>MP: <strong id="megumin-mp-val">50</strong>%</span>
+                      <div class="bar-outer"><div class="bar-inner mp" id="megumin-mp-bar" style="width: 50%;"></div></div>
+                    </div>
+                  </div>
+                  <div class="card-action">
+                    <button class="btn btn-sm btn-primary" id="btn-cast-explosion">Explosion!</button>
+                    <button class="btn btn-sm btn-secondary" id="btn-channel-megumin">Channel MP</button>
+                  </div>
+                </div>
+
+                <!-- Hero 3: Sealed Veldora (Lock Gate Overlay) -->
+                <div class="mock-component hero-card sealed" id="comp-veldora">
+                  <!-- Seal Overlay Lock -->
+                  <div class="seal-overlay" id="veldora-seal-gate">
+                    <span class="seal-icon">🔒</span>
+                    <h4>Veldora Sealed</h4>
+                    <p>Unlock requires multiple coordinated spell intents via Transaction Frame</p>
+                    <button class="btn btn-xs btn-outline" id="btn-break-seal">Release Veldora</button>
+                  </div>
+                  
+                  <span class="render-badge" id="badge-veldora">Renders: 1</span>
+                  <div class="component-title">Veldora Tempest <span class="tag-lens">reads veldoraLens</span></div>
+                  <div class="hero-header-row">
+                    <span class="hero-avatar-icon">🐉</span>
+                    <div>
+                      <h4>Veldora Tempest</h4>
+                      <small class="hero-level-text">Level <span id="veldora-level-val">99</span></small>
+                    </div>
+                  </div>
+                  <div class="hud-stats-bars">
+                    <div class="stat-bar-row">
+                      <span>HP: <strong id="veldora-hp-val">9999</strong>/9999</span>
+                      <div class="bar-outer"><div class="bar-inner hp" id="veldora-hp-bar" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="stat-bar-row">
+                      <span>MP: <strong id="veldora-mp-val">100</strong>%</span>
+                      <div class="bar-outer"><div class="bar-inner mp" id="veldora-mp-bar" style="width: 100%;"></div></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Monitor logs component -->
+              <div class="mock-component" id="comp-log">
+                <span class="render-badge" id="badge-log">Renders: 1</span>
+                <div class="component-title">Log System <span class="tag-lens">reads logsLens</span></div>
+                <div class="log-info">
+                  <span>Spell Logs: <strong id="log-count-val">2</strong> logged operations</span>
+                  <button class="btn btn-xs btn-outline" id="btn-rest-party">Rest Entire Party (Single Tick Batch)</button>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Operations Monitor -->
-            <div class="mock-component" id="comp-log">
-              <span class="render-badge" id="badge-log">Renders: 1</span>
-              <div class="component-title">Activity Monitor <span class="tag-lens">reads logLens</span></div>
-              <div class="log-info">
-                <span>Spells Cast Logs: <strong id="log-count-val">2</strong></span>
-                <button class="btn btn-xs btn-outline" id="frame-batch-btn">Run Ultimate (Batched Frame transaction)</button>
-              </div>
+          <!-- Sandbox Code & JSON Tree View -->
+          <div class="sandbox-visualizer">
+            <div class="visualizer-tabs">
+              <button class="v-tab active" data-target="tab-state">State Snapshot</button>
+              <button class="v-tab" data-target="tab-code">Utsutsu Code</button>
             </div>
 
-          </div>
-        </div>
-
-        <!-- Live Code and State Tree -->
-        <div class="sandbox-visualizer">
-          <div class="visualizer-tabs">
-            <button class="v-tab active" data-target="tab-state">State Tree</button>
-            <button class="v-tab" data-target="tab-code">Utsutsu Code</button>
-          </div>
-
-          <!-- Live State Tree Panel -->
-          <div class="v-panel active" id="tab-state">
-            <pre><code class="language-json" id="state-json-view">
+            <div class="v-panel active" id="tab-state">
+              <pre><code class="language-json" id="state-json-view">
 {
-  "hero": {
-    "name": "Rimuru Tempest",
-    "level": 35,
-    "hp": 1200
-  },
-  "mana": 85,
+  "party": [
+    { "name": "Rimuru Tempest", "level": 35, "hp": 1200, "mp": 85 },
+    { "name": "Megumin", "level": 24, "hp": 600, "mp": 50 }
+  ],
+  "sealBroken": false,
   "logs": 2
 }
-            </code></pre>
-            <div class="visualizer-hint">
-              <span>💡 When you trigger actions, Utsutsu highlights modifications in the tree, updating only the target components. In Brittle mode, watch the entire dashboard flash rendering counters simultaneously.</span>
+              </code></pre>
+              <div class="visualizer-hint">
+                <span>💡 Click <strong>"Release Veldora"</strong> to break the seal. Notice that Utsutsu wraps three operations (breaking seal, charging MP, adding logs) into a single frame, resulting in only 1 render tick.</span>
+              </div>
             </div>
-          </div>
 
-          <!-- Code Panel -->
-          <div class="v-panel" id="tab-code">
-            <pre><code class="language-javascript">
-// Define atomic Cells
+            <div class="v-panel" id="tab-code">
+              <pre><code class="language-javascript">
+// Initialize environment
 const store = createUtsutsu({
-  hero: { name: "Rimuru Tempest", level: 35, hp: 1200 },
-  mana: 85,
+  party: [
+    { name: "Rimuru Tempest", hp: 1200, mp: 85 },
+    { name: "Megumin", hp: 600, mp: 50 }
+  ],
+  sealBroken: false,
   logs: 2
 });
 
-// Define derived selectors (Lenses)
-const heroLens = store.lens("heroStats", s => s.hero);
-const manaLens = store.lens("manaPool", s => s.mana);
-const logsLens = store.lens("systemLogs", s => s.logs);
-
-// Define pure update mutators (Intents)
-const trainHero = store.intent("train", s => ({
-  ...s,
-  hero: { ...s.hero, level: s.hero.level + 1 },
-  logs: s.logs + 1
-}));
-            </code></pre>
+// Break Veldora Seal (Frame transaction)
+function breakVeldoraSeal() {
+  frame(() => {
+    setSealBroken(true);
+    addVeldoraToParty();
+    addSystemLog("Dragon Veldora has awakened!");
+  }); // Subscribed UI updates exactly once
+}
+              </code></pre>
+            </div>
           </div>
         </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Complete Documentation Section -->
-  <section class="section" id="docs">
-    <div class="container">
-      <div class="section-header">
-        <h2>Utsutsu Guidebook</h2>
-        <p>Complete multi-scenario architectural guides and strict API specifications.</p>
       </div>
 
-      <div class="docs-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="docs-sidebar">
-          <ul class="docs-nav-list">
-            <li><button class="docs-nav-btn active" data-chapter="intro">1. Philosophy & Installation</button></li>
-            <li><button class="docs-nav-btn" data-chapter="concepts">2. Cells, Lenses & Intents</button></li>
-            <li><button class="docs-nav-btn" data-chapter="scenario-cart">3. Scenario: Shopping Cart</button></li>
-            <li><button class="docs-nav-btn" data-chapter="scenario-rpg">4. Scenario: RPG Battle HUD</button></li>
-            <li><button class="docs-nav-btn" data-chapter="scenario-form">5. Scenario: Form & Autosave</button></li>
-            <li><button class="docs-nav-btn" data-chapter="api">6. Strict API Specification</button></li>
-          </ul>
-        </aside>
-
-        <!-- Chapter Content Pane -->
-        <main class="docs-content">
-          
-          <!-- Chapter 1: Philosophy & Installation -->
-          <article class="docs-chapter active" id="chap-intro">
-            <h3>1. Philosophy & Installation</h3>
-            <p><strong>Utsutsu (現)</strong> stands for "consciousness" and "reality". We believe React state libraries should be simple to write, explicit to update, and precise to re-render.</p>
-            <p>Most frameworks force you into selector boilerplate (Zustand selectors, Redux Reselect) or proxy implicit mutations (Signals assignment). Utsutsu offers the best of both: synchronous, trace-ready unidirectional updates wrapped in automatically cached, dynamic dependency selector trees.</p>
-            
-            <h4>Installation</h4>
-            <pre><code class="language-bash">npm install utsutsu</code></pre>
-            
-            <p>Utsutsu has zero dependencies, and bundles to under 1.5kB (minified + gzipped), fully supporting Concurrent Features in React 18+.</p>
-          </article>
-
-          <!-- Chapter 2: Core Concepts -->
-          <article class="docs-chapter" id="chap-concepts">
-            <h3>2. Core Concepts</h3>
-            <p>Utsutsu's architecture rests on four simple elements:</p>
-            
-            <ul>
-              <li><strong>Cells</strong>: Writable units of state. The atoms of application reality.</li>
-              <li><strong>Lenses</strong>: Read-only derived values. Lenses form a dependency graph, computing evaluations lazily and caching results until their underlying dependency cells update.</li>
-              <li><strong>Intents</strong>: Pure state mutations. Reducers and actions rolled into a single named function.</li>
-              <li><strong>Frames</strong>: Group multiple state mutations within a single transaction boundary, ensuring React only receives a single combined notify pulse at the end.</li>
+      <!-- TAB 2: CORE GUIDEBOOK -->
+      <div class="portal-tab-content" id="tab-guide-section">
+        <div class="docs-wrapper">
+          <aside class="docs-sidebar">
+            <ul class="docs-nav-list">
+              <li><button class="docs-nav-btn active" data-chapter="guide-motivation">1. Motivation & Philosophy</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-getting-started">2. Getting Started</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-cells">3. Cells (Atomic State)</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-lenses">4. Lenses (Derived Cache)</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-intents">5. Intents (Explicit Updates)</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-frames">6. Frames (Transactions)</button></li>
+              <li><button class="docs-nav-btn" data-chapter="guide-react">7. React Architecture integration</button></li>
             </ul>
+          </aside>
 
-            <pre><code class="language-typescript">
+          <main class="docs-content">
+            <article class="docs-chapter active" id="chap-guide-motivation">
+              <h3>1. Motivation & Philosophy</h3>
+              <p>Why create Utsutsu when we have Redux, Zustand, Recoil, and Signals? State management in modern React typically falls into two traps:</p>
+              
+              <h4>The Selector Trap (Zustand/Redux)</h4>
+              <p>In store libraries, you pull values via selector functions:</p>
+              <pre><code class="language-typescript">const count = useStore(state => state.counters[id].value);</code></pre>
+              <p>If you don't write selectors with extreme care, or if you select an object instead of a primitive, **React will re-render your component on every single state change anywhere in the store**. This leads to manual optimizations (e.g. `useShallow`, `createSelector` from Reselect), which add clutter and cognitive load.</p>
+
+              <h4>The Magic Proxy Trap (Signals/MobX)</h4>
+              <p>Signals solve re-render issues by using proxy wrapper objects and intercepting property access:</p>
+              <pre><code class="language-typescript">state.count++; // Implicit modification</code></pre>
+              <p>While this is highly performant, it bypasses React's unidirectional data flow rules. State mutations happen implicitly anywhere in your views, making bug tracing, time-travel debugging, and test assertions extremely difficult. It also runs counter to React 18 Concurrent Rendering patterns.</p>
+
+              <div class="alert alert-note">
+                <h4>The Waking World Solution: Utsutsu (現)</h4>
+                <p>Utsutsu offers a third way: state is read-only in components, updates are dispatched via named pure mutators (Intents), and components subscribe to Lenses. Lenses compile into a dynamic evaluation graph, recalculating lazily and surgically notifying only the exact components that rely on modified dependencies.</p>
+              </div>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-getting-started">
+              <h3>2. Getting Started</h3>
+              <p>Add Utsutsu to your project using your package manager of choice:</p>
+              <pre><code class="language-bash">
+# npm
+npm install utsutsu
+# yarn
+yarn add utsutsu
+# pnpm
+pnpm add utsutsu
+              </code></pre>
+
+              <p>Setting up Utsutsu requires three simple steps: defining your initial state, creating computed lenses for reading, and declaring intents for updates.</p>
+              <pre><code class="language-typescript">
 import { createUtsutsu } from "utsutsu";
 
-const store = createUtsutsu({
-  username: "Rimuru",
-  power: 9000
+// 1. Create a global state slice
+export const store = createUtsutsu({
+  count: 0,
+  username: "Rimuru"
 });
 
-// A Lens tracks state changes and caches
-const powerStatusLens = store.lens("powerStatus", s => ({
-  name: s.username,
-  isOver9000: s.power > 9000
-}));
+// 2. Define computed lenses outside of React components
+export const countLens = store.lens("count", s => s.count);
 
-// An Intent declares how state updates
-const train = store.intent("train", (state, amount: number) => ({
+// 3. Declare intents for updating
+export const increment = store.intent("increment", (state, amount: number = 1) => ({
   ...state,
-  power: state.power + amount
+  count: state.count + amount
 }));
-            </code></pre>
-          </article>
+              </code></pre>
 
-          <!-- Chapter 3: Scenario: Shopping Cart -->
-          <article class="docs-chapter" id="chap-scenario-cart">
-            <h3>3. Scenario: Global Shopping Cart</h3>
-            <p>This scenario shows how to manage a shopping cart with dynamic calculations (subtotal, taxes, discounts) that must compute instantly without wasteful render triggers in product lists.</p>
-            
-            <pre><code class="language-typescript">
+              <p>Then, connect the lens inside a React component using the `useValue` hook:</p>
+              <pre><code class="language-typescript">
+import React from "react";
+import { useValue } from "utsutsu";
+import { countLens, increment } from "./store";
+
+export function Counter() {
+  const count = useValue(countLens);
+  return (
+    &lt;button onClick={() => increment(1)}&gt;
+      Count is: {count}
+    &lt;/button&gt;
+  );
+}
+              </code></pre>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-cells">
+              <h3>3. Cells (Atomic State)</h3>
+              <p>Behind the scenes, when you initialize a store with a state shape, Utsutsu decomposes the state into writeable reactive units called **Cells**.</p>
+              <p>A Cell acts as a single leaf node in your reactive graph. It holds the absolute raw value and maintains an integer version counter. When an intent updates a cell, the version counter increments. This informs child derived nodes that their cached evaluations are out of date.</p>
+
+              <div class="alert alert-tip">
+                <h4>Granularity Guideline</h4>
+                <p>Do not create separate stores for every primitive value. Create a unified store slice representing a distinct business domain (e.g. `authStore`, `shoppingStore`) and let Utsutsu decompose them into atomic cells automatically.</p>
+              </div>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-lenses">
+              <h3>4. Lenses (Derived Cache)</h3>
+              <p>Lenses are read-only derived state nodes. They map a slice of your cells to a computed value:</p>
+              <pre><code class="language-typescript">
+const activeItemsLens = store.lens("active", state => 
+  state.items.filter(item => item.active)
+);
+              </code></pre>
+
+              <h4>Dynamic Dependency Tracking & Lazy Evaluation</h4>
+              <p>When a Lens executes, Utsutsu intercepts all cell read operations and dynamically records the cell keys as dependencies. If cell values do not change, the Lens returns the cached result, bypassing the selector logic.</p>
+              <p>Furthermore, if a component is unmounted, Utsutsu automatically puts its subscribed lenses to sleep, suspending evaluation runs until another active component requests them. This prevents memory leaks and background computational waste.</p>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-intents">
+              <h3>5. Intents (Explicit Updates)</h3>
+              <p>Intents represent deliberate state updates. Unlike Redux where actions and reducers are defined separately, Utsutsu defines them together in a single, type-safe definition:</p>
+              <pre><code class="language-typescript">
+export const changeUsername = store.intent("setName", (state, name: string) => ({
+  ...state,
+  username: name
+}));
+              </code></pre>
+
+              <h4>Handling Side Effects</h4>
+              <p>Intents must remain pure, synchronous state transformers. For asynchronous processes (like API calls), handle the async operation in a standard function and call the intent when the promise resolves:</p>
+              <pre><code class="language-typescript">
+export async function loadUserProfile(userId: string) {
+  try {
+    const res = await fetch(`/api/users/${userId}`);
+    const profile = await res.json();
+    // Dispatch pure intent
+    changeUsername(profile.username);
+  } catch (err) {
+    console.error("Failed to load user profile", err);
+  }
+}
+              </code></pre>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-frames">
+              <h3>6. Frames (Transactions)</h3>
+              <p>If you call multiple intents sequentially, each call ordinarily fires a store notification pulse. If these calls occur outside of React event handlers, it can result in multiple unnecessary UI render passes.</p>
+              <p>Utsutsu resolves this through **Frames**—transactional update boundaries.</p>
+              <pre><code class="language-typescript">
+import { frame } from "utsutsu";
+
+function resetGame() {
+  frame(() => {
+    resetScore();
+    clearBoard();
+    incrementMatchCount();
+  }); // React is notified exactly once here
+}
+              </code></pre>
+            </article>
+
+            <article class="docs-chapter" id="chap-guide-react">
+              <h3>7. React Integration</h3>
+              <p>Utsutsu integrates with React using `useSyncExternalStore` under the hood. This guarantees that your components remain fully synchronized with the store, eliminating "tearing" during React 18 concurrent transitions.</p>
+              
+              <h4>Precision Re-rendering</h4>
+              <p>Because components subscribe directly to Lenses, a component will **only** re-render if the final evaluated lens reference changes. If a sibling cell changes, the component's render hook is never triggered, enabling near-native re-rendering performance.</p>
+            </article>
+          </main>
+        </div>
+      </div>
+
+      <!-- TAB 3: SCENARIO RECIPES -->
+      <div class="portal-tab-content" id="tab-recipes-section">
+        <div class="docs-wrapper">
+          <aside class="docs-sidebar">
+            <ul class="docs-nav-list">
+              <li><button class="docs-nav-btn active" data-chapter="recipe-cart">Recipe A: Shopping Cart</button></li>
+              <li><button class="docs-nav-btn" data-chapter="recipe-rpg">Recipe B: RPG Combat HUD</button></li>
+              <li><button class="docs-nav-btn" data-chapter="recipe-form">Recipe C: Form Validation</button></li>
+              <li><button class="docs-nav-btn" data-chapter="recipe-persist">Recipe D: LocalStorage Middleware</button></li>
+            </ul>
+          </aside>
+
+          <main class="docs-content">
+            <article class="docs-chapter active" id="chap-recipe-cart">
+              <h3>Recipe A: Shopping Cart</h3>
+              <p>This recipe demonstrates how to calculate subtotal, discount codes, and taxes dynamically using cached lenses without causing re-renders in other sections of the catalog.</p>
+              
+              <pre><code class="language-typescript">
 import { createUtsutsu, useValue } from "utsutsu";
 
-// 1. Define State Interfaces
 interface CartItem { id: string; name: string; price: number; qty: number; }
-interface CartState { items: CartItem[]; couponDiscount: number; taxRate: number; }
+interface CartState { items: CartItem[]; discount: number; tax: number; }
 
 const store = createUtsutsu&lt;CartState&gt;({
   items: [],
-  couponDiscount: 0.15, // 15% discount
-  taxRate: 0.08        // 8% tax
+  discount: 0.1, // 10% discount
+  tax: 0.08      // 8% tax rate
 });
 
-// 2. Computed Lenses (Derived state caches automatically)
-export const cartItemsLens = store.lens("items", s => s.items);
+// Lenses (Derived Caches)
+export const itemsLens = store.lens("items", s => s.items);
 
-export const cartSubtotalLens = store.lens("subtotal", s => 
+export const subtotalLens = store.lens("subtotal", s => 
   s.items.reduce((sum, item) => sum + (item.price * item.qty), 0)
 );
 
-export const cartTotalLens = store.lens("total", s => {
-  // Lenses can depend on other computed fields/properties
-  const subtotal = s.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const discounted = subtotal * (1 - s.couponDiscount);
-  return discounted * (1 + s.taxRate);
+export const grandTotalLens = store.lens("grandTotal", s => {
+  const sub = s.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const discountedSub = sub * (1 - s.discount);
+  return discountedSub * (1 + s.tax);
 });
-
-// 3. Waking Intents (Synchronous State Transitions)
-export const addToCart = store.intent("addItem", (s, newItem: CartItem) => {
-  const existingIndex = s.items.findIndex(item => item.id === newItem.id);
-  if (existingIndex > -1) {
-    const updatedItems = [...s.items];
-    updatedItems[existingIndex].qty += 1;
-    return { ...s, items: updatedItems };
-  }
-  return { ...s, items: [...s.items, newItem] };
-});
-
-export const updateQty = store.intent("updateQty", (s, id: string, qty: number) => ({
-  ...s,
-  items: s.items.map(item => item.id === id ? { ...item, qty } : item).filter(item => item.qty > 0)
-}));
-
-// 4. React Integration (Subscribes surgically to target slices)
-export function CartSummary() {
-  const subtotal = useValue(cartSubtotalLens);
-  const total = useValue(cartTotalLens);
-
-  return (
-    &lt;div className="cart-checkout"&gt;
-      &lt;div&gt;Subtotal: ${subtotal.toFixed(2)}&lt;/div&gt;
-      &lt;div&gt;Grand Total: ${total.toFixed(2)}&lt;/div&gt;
-    &lt;/div&gt;
-  );
-}
-            </code></pre>
-          </article>
-
-          <!-- Chapter 4: Scenario: RPG Battle HUD -->
-          <article class="docs-chapter" id="chap-scenario-rpg">
-            <h3>4. Scenario: RPG Battle System (Batched Actions)</h3>
-            <p>This scenario shows how to handle complex nested state and dynamic battle actions, using <strong>Frames</strong> to batch character turns into a single UI update.</p>
-            
-            <pre><code class="language-typescript">
-import { createUtsutsu, useValue, frame } from "utsutsu";
-
-interface Character { name: string; hp: number; maxHp: number; mana: number; }
-interface BattleState { party: Character[]; turnIndex: number; combatLog: string[]; }
-
-const store = createUtsutsu&lt;BattleState&gt;({
-  party: [
-    { name: "Rimuru Tempest", hp: 1200, maxHp: 1500, mana: 85 },
-    { name: "Megumin", hp: 600, maxHp: 800, mana: 50 }
-  ],
-  turnIndex: 0,
-  combatLog: ["Battle commenced."]
-});
-
-// Lenses
-export const partyLens = store.lens("party", s => s.party);
-export const activeLogLens = store.lens("logs", s => s.combatLog);
 
 // Intents
-export const damageHero = store.intent("damageHero", (s, index: number, damage: number) => {
-  const updatedParty = [...s.party];
-  updatedParty[index] = {
-    ...updatedParty[index],
-    hp: Math.max(0, updatedParty[index].hp - damage)
-  };
-  return { ...s, party: updatedParty };
+export const addItem = store.intent("add", (s, item: CartItem) => {
+  const index = s.items.findIndex(i => i.id === item.id);
+  if (index > -1) {
+    const updated = [...s.items];
+    updated[index].qty += 1;
+    return { ...s, items: updated };
+  }
+  return { ...s, items: [...s.items, item] };
 });
 
-export const consumeMana = store.intent("useMana", (s, index: number, amount: number) => {
-  const updatedParty = [...s.party];
-  updatedParty[index] = {
-    ...updatedParty[index],
-    mana: Math.max(0, updatedParty[index].mana - amount)
-  };
-  return { ...s, party: updatedParty };
-});
-
-export const addLog = store.intent("addLog", (s, message: string) => ({
+export const removeOne = store.intent("remove", (s, id: string) => ({
   ...s,
-  combatLog: [...s.combatLog, message]
+  items: s.items.map(i => i.id === id ? { ...i, qty: i.qty - 1 } : i).filter(i => i.qty > 0)
+}));
+              </code></pre>
+            </article>
+
+            <article class="docs-chapter" id="chap-recipe-rpg">
+              <h3>Recipe B: RPG Party Battle HUD</h3>
+              <p>This recipe coordinates stats for multiple party members, showing how to execute spell turns and log events inside a single transaction frame.</p>
+              
+              <pre><code class="language-typescript">
+import { createUtsutsu, frame } from "utsutsu";
+
+interface Hero { name: string; hp: number; mp: number; status: string; }
+interface BattleState { squad: Hero[]; battleLog: string[]; }
+
+const store = createUtsutsu&lt;BattleState&gt;({
+  squad: [
+    { name: "Rimuru Tempest", hp: 1500, mp: 90, status: "Normal" },
+    { name: "Megumin", hp: 700, mp: 60, status: "Normal" }
+  ],
+  battleLog: []
+});
+
+// Intents
+export const damageHero = store.intent("damage", (s, index: number, hpLoss: number) => {
+  const squad = [...s.squad];
+  squad[index] = { ...squad[index], hp: Math.max(0, squad[index].hp - hpLoss) };
+  return { ...s, squad };
+});
+
+export const useMana = store.intent("spendMp", (s, index: number, mpLoss: number) => {
+  const squad = [...s.squad];
+  squad[index] = { ...squad[index], mp: Math.max(0, squad[index].mp - mpLoss) };
+  return { ...s, squad };
+});
+
+export const writeLog = store.intent("log", (s, msg: string) => ({
+  ...s,
+  battleLog: [...s.battleLog, msg]
 }));
 
-// Multi-Action Batch: Frame execution
+// Coordinated Round execution
 export function executeSpellRound() {
-  // Megumin casts Explosion! Groups multiple intents into a single transaction frame.
-  // Component subscriptions receive exactly one notification tick, avoiding layout thrashing.
   frame(() => {
-    consumeMana(1, 40);             // Megumin loses mana
-    damageHero(1, 50);              // Recoil damage to Megumin
-    addLog("Megumin cast Explosion!"); // Add combat log entry
-  });
+    useMana(1, 30);
+    damageHero(1, 100);
+    writeLog("Megumin cast spell, losing HP & Mana!");
+  }); // All subscribers are notified once
 }
-            </code></pre>
-          </article>
+              </code></pre>
+            </article>
 
-          <!-- Chapter 5: Scenario: Form & Autosave -->
-          <article class="docs-chapter" id="chap-scenario-form">
-            <h3>5. Scenario: Form Validation & Debounced Autosave</h3>
-            <p>This scenario shows how to validate user forms in real-time using computed lenses, and handle debounced asynchronous autosaves using Intents.</p>
-            
-            <pre><code class="language-typescript">
-import { createUtsutsu, useValue } from "utsutsu";
+            <article class="docs-chapter" id="chap-recipe-form">
+              <h3>Recipe C: Form Validation</h3>
+              <p>Autosave input values, calculate error messages on-demand using cached lenses, and trigger async validations.</p>
+              
+              <pre><code class="language-typescript">
+import { createUtsutsu } from "utsutsu";
 
-interface FormState {
-  fields: { email: string; name: string; age: number; };
-  status: "idle" | "saving" | "saved" | "error";
-}
-
-const store = createUtsutsu&lt;FormState&gt;({
-  fields: { email: "", name: "", age: 18 },
-  status: "idle"
+const store = createUtsutsu({
+  email: "",
+  password: "",
+  loading: false
 });
 
-// Derived validation Lenses (Evaluated once, cached)
-export const emailErrorLens = store.lens("emailErr", s => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!s.fields.email) return "Email is required.";
-  if (!emailRegex.test(s.fields.email)) return "Invalid email address format.";
+// Lenses for instant validation feedback
+export const isEmailValidLens = store.lens("emailVal", s => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(s.email);
+});
+
+export const formErrorLens = store.lens("errors", s => {
+  if (s.password.length > 0 && s.password.length < 8) {
+    return "Password must be at least 8 characters.";
+  }
   return null;
 });
 
-export const isFormValidLens = store.lens("isValid", s => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return s.fields.name.length >= 2 && emailRegex.test(s.fields.email);
-});
-
 // Intents
-export const updateField = store.intent("setField", (s, key: "email" | "name", val: string) => ({
+export const setField = store.intent("setField", (s, key: "email" | "password", value: string) => ({
   ...s,
-  fields: { ...s.fields, [key]: val }
+  [key]: value
 }));
+              </code></pre>
+            </article>
 
-export const setSavingStatus = store.intent("setStatus", (s, status: FormState["status"]) => ({
-  ...s,
-  status
-}));
+            <article class="docs-chapter" id="chap-recipe-persist">
+              <h3>Recipe D: LocalStorage Middleware</h3>
+              <p>A complete middleware implementation that automatically persists state changes to `localStorage` and restores them on page reload.</p>
+              
+              <pre><code class="language-typescript">
+import { createUtsutsu } from "utsutsu";
 
-// Asynchronous side-effect helper with debounce
-let saveTimeout: ReturnType&lt;typeof setTimeout&gt;;
-export function triggerAutosave(formData: FormState["fields"]) {
-  setSavingStatus("saving");
-  clearTimeout(saveTimeout);
-  
-  saveTimeout = setTimeout(async () => {
-    try {
-      await fetch("/api/save-form", {
-        method: "POST",
-        body: JSON.stringify(formData)
-      });
-      setSavingStatus("saved");
-    } catch {
-      setSavingStatus("error");
-    }
-  }, 1000);
+export function createPersistentStore&lt;T extends object&gt;(key: string, defaultState: T) {
+  // 1. Read existing cache
+  const cached = localStorage.getItem(key);
+  const initialState = cached ? JSON.parse(cached) : defaultState;
+
+  // 2. Create the store instance
+  const store = createUtsutsu&lt;T&gt;(initialState);
+
+  // 3. Listen for changes and write back to storage
+  store.subscribe(() => {
+    localStorage.setItem(key, JSON.stringify(store.state));
+  });
+
+  return store;
 }
-            </code></pre>
-          </article>
 
-          <!-- Chapter 6: Strict API Specification -->
-          <article class="docs-chapter" id="chap-api">
-            <h3>6. Strict API Specification</h3>
-            <p>Detailed TypeScript type declarations and parameter definitions for Utsutsu's public exports.</p>
-            
-            <h4>1. <code>createUtsutsu</code></h4>
-            <pre><code class="language-typescript">
-function createUtsutsu&lt;T extends object&gt;(initialState: T): UtsutsuStore&lt;T&gt;;
+// Usage
+const userStore = createPersistentStore("app-user-session", {
+  token: "",
+  loggedIn: false
+});
+              </code></pre>
+            </article>
+          </main>
+        </div>
+      </div>
 
+      <!-- TAB 4: API REFERENCE -->
+      <div class="portal-tab-content" id="tab-api-section">
+        <div class="docs-wrapper">
+          <aside class="docs-sidebar">
+            <ul class="docs-nav-list">
+              <li><button class="docs-nav-btn active" data-chapter="api-exports">Core API Exports</button></li>
+              <li><button class="docs-nav-btn" data-chapter="api-internals">Under the Hood: Graph</button></li>
+            </ul>
+          </aside>
+
+          <main class="docs-content">
+            <article class="docs-chapter active" id="chap-api-exports">
+              <h3>Core API Exports</h3>
+              <p>Type declarations and parameters for all exported Utsutsu library utilities.</p>
+              
+              <h4><code>createUtsutsu&lt;T&gt;(initialState: T): UtsutsuStore&lt;T&gt;</code></h4>
+              <p>Initializes a new state store instance.</p>
+              <pre><code class="language-typescript">
 interface UtsutsuStore&lt;T&gt; {
-  // Access raw, unwraped current state snapshot
   state: T;
   
-  // Creates a derived cache lens
+  // Define derived cache lens
   lens&lt;V&gt;(name: string, selector: (state: T) => V): Lens&lt;V&gt;;
   
-  // Creates a synchronous state modifier intent
-  intent&lt;Args extends any[]&gt;(
+  // Define update intent
+  intent&lt;A extends any[]&gt;(
     name: string, 
-    mutator: (state: T, ...args: Args) => T
-  ): (...args: Args) => void;
+    mutator: (state: T, ...args: A) => T
+  ): (...args: A) => void;
   
-  // Subscribe to raw changes (useful for integrations)
+  // Subscribe listener to state updates
   subscribe(listener: () => void): () => void;
 }
-            </code></pre>
+              </code></pre>
 
-            <h4>2. <code>useValue</code></h4>
-            <pre><code class="language-typescript">
-// React Hook. Subscribes component to a Lens. Rerenders ONLY when value changes.
-function useValue&lt;V&gt;(lens: Lens&lt;V&gt;): V;
-            </code></pre>
+              <h4><code>useValue&lt;V&gt;(lens: Lens&lt;V&gt;): V</code></h4>
+              <p>React hook. Subscribes component to a computed Lens, executing local re-renders ONLY when the returned reference updates.</p>
 
-            <h4>3. <code>frame</code></h4>
-            <pre><code class="language-typescript">
-// Batches multiple operations into a single tick
-function frame(callback: () => void): void;
-            </code></pre>
-          </article>
+              <h4><code>frame(callback: () => void): void</code></h4>
+              <p>Transactional boundary tool. Holds component triggers inside the callback block and notifies subscribers once at the end.</p>
+            </article>
 
-        </main>
-      </div>
-    </div>
-  </section>
+            <article class="docs-chapter" id="chap-api-internals">
+              <h3>Under the Hood: Evaluation Graph</h3>
+              <p>Utsutsu operates on a directed acyclic graph (DAG) model to prevent redundant derived calculations. It utilizes the following components:</p>
 
-  <!-- Comparison Matrix -->
-  <section class="section" id="comparison">
-    <div class="container">
-      <div class="section-header">
-        <h2>Comparison Matrix</h2>
-        <p>A structural look at how Utsutsu compares with the industry leaders.</p>
+              <h4>Dynamic Evaluation Stack</h4>
+              <p>A global array of active lenses is maintained during the read phase. When a Lens selector runs, it pushes itself onto the stack. Any Cell read operations query the top of the stack and register the Lens as a subscriber.</p>
+
+              <h4>Version Tracking</h4>
+              <p>To bypass string/array comparison overhead, every Cell maintains an integer version counter. Lenses cache the cell versions used in their last evaluation. If the cell versions match, the cached value is returned immediately. This ensures $O(1)$ cache hit resolution.</p>
+            </article>
+          </main>
+        </div>
       </div>
 
-      <div class="table-container">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Redux Toolkit</th>
-              <th>Zustand</th>
-              <th>Jotai</th>
-              <th class="highlight">Utsutsu 🌊</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Boilerplate</strong></td>
-              <td>High</td>
-              <td>Low</td>
-              <td>Medium</td>
-              <td class="highlight"><strong>Very Low</strong></td>
-            </tr>
-            <tr>
-              <td><strong>State Structure</strong></td>
-              <td>Single Tree</td>
-              <td>Single Tree</td>
-              <td>Distributed Atoms</td>
-              <td class="highlight"><strong>Single Tree + Lenses</strong></td>
-            </tr>
-            <tr>
-              <td><strong>Re-render Control</strong></td>
-              <td>Manual Selectors</td>
-              <td>Selector Hooks</td>
-              <td>Atom Subscriptions</td>
-              <td class="highlight"><strong>Automatic Lens Graph</strong></td>
-            </tr>
-            <tr>
-              <td><strong>Update Path</strong></td>
-              <td>Dispatch Actions</td>
-              <td>Direct Mutators</td>
-              <td>Atom Setters</td>
-              <td class="highlight"><strong>Explicit Intents</strong></td>
-            </tr>
-            <tr>
-              <td><strong>Update Batching</strong></td>
-              <td>Middleware</td>
-              <td>Auto-batched</td>
-              <td>Auto-batched</td>
-              <td class="highlight"><strong>Transaction Frames</strong></td>
-            </tr>
-            <tr>
-              <td><strong>Library Size</strong></td>
-              <td>~30kB</td>
-              <td>~3kB</td>
-              <td>~8kB</td>
-              <td class="highlight"><strong>&lt; 1.5kB</strong></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </section>
 
