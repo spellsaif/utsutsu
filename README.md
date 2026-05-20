@@ -110,14 +110,43 @@ function TodoCount() {
 ## 🧩 Core Concepts
 
 ### 1. Cells (Atomic State Units)
-The smallest writable state unit. A cell holds a value, tracks its update version, and notifies its dependents when it changes. Cells have no knowledge of React.
+The smallest writable state unit in Utsutsu. A cell holds a value, tracks its update version, and notifies its subscribers when it changes.
 
+> [!WARNING]
+> **Cells have no knowledge of React.**
+> Simply calling `cell.get()` inside a React render path will **not** cause the component to update when `cell.set()` is called. To subscribe a React component to a cell, you must read the value using the `useValue(cell)` hook.
+
+#### Vanilla JS Usage (Manual Subscriptions)
 ```ts
 import { createCell } from "utsutsu";
 
 const cell = createCell("Alice");
-cell.get();         // "Alice"
-cell.set("Bob");    // Notifies subscribers
+
+// Subscribe a callback to state changes
+const unsubscribe = cell.subscribe(() => {
+  console.log("State changed to:", cell.get());
+});
+
+cell.set("Bob");    // Logs: "State changed to: Bob"
+unsubscribe();      // Clean up subscription
+```
+
+#### React Usage (Automatic Subscriptions)
+```tsx
+import { createCell, useValue } from "utsutsu";
+
+const countCell = createCell(0);
+
+function Counter() {
+  // useValue reads the cell AND registers a React subscriber
+  const count = useValue(countCell);
+  
+  return (
+    <button onClick={() => countCell.set(count + 1)}>
+      Count: {count}
+    </button>
+  );
+}
 ```
 
 ### 2. Lenses (Dynamic Caching)
