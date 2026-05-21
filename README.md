@@ -89,11 +89,12 @@ export const undoneCountLens = store.lens("undoneCount", s =>
   s.todos.filter(t => !t.done).length
 );
 
-// Intents are named state transactions
-export const addTodo = store.intent("addTodo", (s, text: string) => ({
-  ...s,
-  todos: [...s.todos, { id: Date.now(), text, done: false }]
-}));
+// Grouped intents with mutative draft writes
+export const todoIntents = store.intents({
+  addTodo: (draft, text: string) => {
+    draft.todos.push({ id: Date.now(), text, done: false });
+  }
+});
 
 // Component.tsx
 import { useValue } from "utsutsu";
@@ -110,33 +111,19 @@ function TodoCount() {
 ## 🧩 Core Concepts
 
 ### 1. Cells (Atomic State Units)
-The smallest writable state unit in Utsutsu. A cell holds a value, tracks its update version, and notifies its subscribers when it changes.
+The smallest writable state unit in Utsutsu. You spawn Cells directly from the root store container via `store.cell("path")` to establish a clear lineage.
 
-> [!WARNING]
-> **Cells have no knowledge of React.**
-> Simply calling `cell.get()` inside a React render path will **not** cause the component to update when `cell.set()` is called. To subscribe a React component to a cell, you must read the value using the `useValue(cell)` hook.
-
-#### Vanilla JS Usage (Manual Subscriptions)
+#### Spawning and Using Sub-Cells
 ```ts
-import { createCell } from "utsutsu";
+const store = createUtsutsu({ count: 0 });
 
-const cell = createCell("Alice");
+// A primitive cell explicitly tied to the root tree domain
+const countCell = store.cell("count"); 
 
-// Subscribe a callback to state changes
-const unsubscribe = cell.subscribe(() => {
-  console.log("State changed to:", cell.get());
-});
+countCell.get();       // 0
+countCell.set(1);       // Updates parent store state, notifying subscribers
 
-cell.set("Bob");    // Logs: "State changed to: Bob"
-unsubscribe();      // Clean up subscription
-```
-
-#### React Usage (Automatic Subscriptions)
-```tsx
-import { createCell, useValue } from "utsutsu";
-
-const countCell = createCell(0);
-
+// React Usage (Automatic Subscriptions)
 function Counter() {
   // useValue reads the cell AND registers a React subscriber
   const count = useValue(countCell);
@@ -149,25 +136,34 @@ function Counter() {
 }
 ```
 
-### 2. Lenses (Dynamic Caching)
-A `Lens` represents derived read-only state. Lenses automatically track their dependencies during execution.
+### 2. Lenses (Multi-Lens Graph Dependency Tracking)
+A `Lens` represents derived read-only state. Lenses automatically track their dependencies during execution—not just from raw state, but also from *other Lenses*, building a Directed Acyclic Graph (DAG) under the hood.
 
 > [!IMPORTANT]
 > **Active/Passive Lifecycle Toggles**:
-> Lenses subscribe to cells *only* when a React component is active. If no components are listening, a Lens enters a **Passive State**, meaning it unsubscribes from its dependencies to prevent memory leaks, evaluating on-demand only when queried.
+> Lenses subscribe to their dependencies *only* when a React component is actively subscribed to them. Otherwise, they enter a **Passive State** and unsubscribe from all dependencies to prevent memory leaks, evaluating on-demand only when read.
 
 ```ts
-const firstName = store.lens("firstName", s => s.user.name.split(" ")[0]);
+const todosLens = store.lens("todos", s => s.todos);
+
+// Dependent Lens automatically tracks updates radiating through todosLens
+const completedTodosLens = store.lens("completedTodos", () => {
+  return todosLens.get().filter(t => t.done);
+});
 ```
 
-### 3. Intents (Unidirectional Writes)
-Intents are named mutations. They receive the current state, apply a transition, and return the next immutable state.
+### 3. Intents (Grouped & Mutative Drafts)
+Intents are named mutations. Utsutsu wraps state mutations in a copy-on-write Proxy draft. You write natural, mutative logic directly inside the handlers without deep object spreading.
 
 ```ts
-const rename = store.intent("rename", (s, name: string) => ({
-  ...s,
-  user: { ...s.user, name }
-}));
+const userIntents = store.intents({
+  updateZipCode: (draft, zip: string) => {
+    draft.user.address.zip = zip;
+  }
+});
+
+// Invocation is natural, type-safe, and namespace grouped:
+userIntents.updateZipCode("456");
 ```
 
 ### 4. Frames (Transactional Updates)
@@ -175,8 +171,8 @@ Want to batch multiple updates? Wrap them in a `frame`. Utsutsu queues notificat
 
 ```ts
 store.frame(() => {
-  addTodo("Learn Utsutsu");
-  addTodo("Build an app");
+  todoIntents.addTodo("Learn Utsutsu");
+  todoIntents.addTodo("Build an app");
 });
 // ──> One render cycle, not two
 ```
@@ -195,10 +191,11 @@ export const dashboardSlice = store.mount("dashboard", {
 });
 
 export const activeTabLens = dashboardSlice.lens("activeTab", s => s.activeTab);
-export const switchTab = dashboardSlice.intent("switchTab", (s, tab: string) => ({
-  ...s,
-  activeTab: tab
-}));
+export const dashboardIntents = dashboardSlice.intents({
+  switchTab: (draft, tab: string) => {
+    draft.activeTab = tab;
+  }
+});
 
 // Clean up memory when feature is unmounted
 // store.unmount("dashboard");
@@ -216,6 +213,74 @@ const disconnect = connectDevTools(store, { name: "My App Store" });
 
 // To clean up subscriptions later (e.g. in hot module replacement)
 // disconnect();
+```
+
+---
+
+## 🌐 Server-Side Rendering (SSR) & Framework Isolation
+
+Global singleton stores leak state across concurrent user requests in Server-Side Rendering (SSR) environments. To prevent state leaks, wrap your app in `UtsutsuProvider` and pass the store created per-request/session via `useState`.
+
+```tsx
+// App.tsx
+import { useState } from "react";
+import { createUtsutsu, UtsutsuProvider } from "utsutsu";
+
+export default function App({ children }) {
+  // Created once per server request/session
+  const [store] = useState(() => createUtsutsu({ todos: [] })); 
+
+  return (
+    <UtsutsuProvider store={store}>
+      {children}
+    </UtsutsuProvider>
+  );
+}
+```
+
+Inside your child components, use `useValue` with a selector function. This automatically resolves the store instance bound to the current server request context:
+
+```tsx
+// Component.tsx
+import { useValue } from "utsutsu";
+
+export function TodoList() {
+  // Automatically resolves from the nearest UtsutsuProvider
+  const todos = useValue(s => s.lens("todos", state => state.todos));
+
+  return (
+    <ul>
+      {todos.map(todo => <li key={todo.id}>{todo.text}</li>)}
+    </ul>
+  );
+}
+```
+
+---
+
+## 🔄 Asynchronous Workflows (Network Side Effects)
+
+Intents in Utsutsu are purely synchronous, deterministic transaction boundaries to ensure features like Time-Travel Debugging work cleanly. 
+
+To handle asynchronous workflows (e.g. data fetching), perform the async operations inside a standard JavaScript function and call synchronous intents to update status and apply data.
+
+```ts
+// 1. Declare pure synchronous intents
+export const statusIntents = store.intents({
+  fetchStart: (draft) => { draft.loading = true; },
+  fetchSuccess: (draft, data) => { draft.loading = false; draft.data = data; }
+});
+
+// 2. Define an asynchronous wrapper function
+export const loadData = async (id: string) => {
+  statusIntents.fetchStart();
+  try {
+    const res = await fetch(`/api/items/${id}`);
+    statusIntents.fetchSuccess(await res.json());
+  } catch (error) {
+    // handle errors with another intent
+  }
+};
 ```
 
 ---
