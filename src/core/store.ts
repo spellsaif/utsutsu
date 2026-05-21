@@ -10,6 +10,7 @@ export class UtsutsuStore<State> {
   public rootCell: Cell<State>;
   public lastIntent: { name: string; args: any[] } | null = null;
   private childStores = new Map<string, UtsutsuStore<any>>();
+  private lenses = new Map<string, Lens<any>>();
   private isSyncing = false;
 
   constructor(initialState: State) {
@@ -24,35 +25,98 @@ export class UtsutsuStore<State> {
   }
 
   /**
-   * Creates a derived, cached Lens.
+   * Creates or returns a cached, derived Lens.
    */
   lens<Name extends string, R>(
     name: Name,
-    computeFn: (state: State) => R
+    computeFn?: (state: State) => R
   ): Lens<R> {
-    return new Lens(name, () => computeFn(this.rootCell.get()));
+    if (this.lenses.has(name)) {
+      return this.lenses.get(name) as Lens<R>;
+    }
+    if (!computeFn) {
+      throw new Error(`Lens "${name}" is not registered yet.`);
+    }
+    const newLens = new Lens(name, () => computeFn(this.rootCell.get()));
+    this.lenses.set(name, newLens);
+    return newLens;
   }
 
   /**
-   * Creates a named write operation (Intent).
+   * Creates a group of named write operations (Intents) with mutative draft writes.
    */
-  intent<Name extends string, Args extends any[]>(
-    name: Name,
-    handlerFn: (state: State, ...args: Args) => State
-  ): (...args: Args) => void {
-    const intentFn = (...args: Args) => {
-      this.lastIntent = { name, args };
-      frame(() => {
-        const currentState = this.rootCell.get();
-        const nextState = handlerFn(currentState, ...args);
-        this.rootCell.set(nextState);
-      });
-    };
-    
-    // Set the function name property for debug inspection and devtools
-    Object.defineProperty(intentFn, "name", { value: name, configurable: true });
-    
-    return intentFn;
+  intents<
+    Handlers extends { [key: string]: (draft: State, ...args: any[]) => void }
+  >(
+    handlers: Handlers
+  ): {
+    [K in keyof Handlers]: Handlers[K] extends (draft: State, ...args: infer Args) => void
+      ? (...args: Args) => void
+      : never;
+  } {
+    const boundIntents = {} as any;
+
+    for (const [name, handlerFn] of Object.entries(handlers)) {
+      const intentFn = (...args: any[]) => {
+        this.lastIntent = { name, args };
+        frame(() => {
+          const currentState = this.rootCell.get();
+          const draft = createDraft(currentState);
+          handlerFn(draft, ...args);
+          const nextState = draft.__finalize__();
+          this.rootCell.set(nextState);
+        });
+      };
+
+      Object.defineProperty(intentFn, "name", { value: name, configurable: true });
+      boundIntents[name] = intentFn;
+    }
+
+    return boundIntents;
+  }
+
+  /**
+   * Spawns a primitive Cell explicitly tied to a state key in this store,
+   * with bi-directional synchronization.
+   */
+  cell<K extends keyof State>(key: K): Cell<State[K]> {
+    const initialVal = this.rootCell.get()[key];
+    const subCell = new Cell(initialVal);
+    let isSyncing = false;
+
+    // Sync parent store changes to sub-cell
+    this.rootCell.subscribe(() => {
+      if (isSyncing) return;
+      isSyncing = true;
+      try {
+        const nextVal = this.rootCell.get()[key];
+        if (subCell.get() !== nextVal) {
+          subCell.set(nextVal);
+        }
+      } finally {
+        isSyncing = false;
+      }
+    });
+
+    // Sync sub-cell changes back to parent store
+    subCell.subscribe(() => {
+      if (isSyncing) return;
+      isSyncing = true;
+      try {
+        const nextVal = subCell.get();
+        const parentState = this.rootCell.get();
+        if (parentState[key] !== nextVal) {
+          this.rootCell.set({
+            ...parentState,
+            [key]: nextVal
+          });
+        }
+      } finally {
+        isSyncing = false;
+      }
+    });
+
+    return subCell;
   }
 
 
@@ -141,4 +205,91 @@ export class UtsutsuStore<State> {
  */
 export function createUtsutsu<State>(initialState: State): UtsutsuStore<State> {
   return new UtsutsuStore(initialState);
+}
+
+/**
+ * Creates a copy-on-write proxy draft for mutating state.
+ */
+function createDraft(base: any, parent?: { copyParent: () => void; key: any }): any {
+  if (base === null || typeof base !== "object") {
+    return base;
+  }
+
+  let copy: any = null;
+  const proxyMap = new Map<any, any>();
+
+  const ensureCopy = () => {
+    if (!copy) {
+      copy = Array.isArray(base) ? [...base] : { ...base };
+      if (parent) {
+        parent.copyParent();
+      }
+    }
+  };
+
+  const handler: ProxyHandler<any> = {
+    get(target, prop, receiver) {
+      if (prop === "__isDraft__") return true;
+      if (prop === "__copy__") return copy;
+      if (prop === "__finalize__") {
+        return () => {
+          if (!copy) return base;
+          for (const key of Reflect.ownKeys(copy)) {
+            const val = copy[key];
+            if (val && val.__isDraft__) {
+              copy[key] = val.__finalize__();
+            }
+          }
+          return copy;
+        };
+      }
+
+      const activeTarget = copy || target;
+      const value = Reflect.get(activeTarget, prop, receiver);
+
+      if (value !== null && typeof value === "object") {
+        if (proxyMap.has(prop)) {
+          return proxyMap.get(prop);
+        }
+        const childProxy = createDraft(value, {
+          copyParent: () => {
+            ensureCopy();
+            copy[prop] = childProxy;
+          },
+          key: prop,
+        });
+        proxyMap.set(prop, childProxy);
+        return childProxy;
+      }
+      return value;
+    },
+    set(_target, prop, value, _receiver) {
+      ensureCopy();
+      const valToSet = (value && value.__isDraft__) ? (value.__copy__ || value) : value;
+      copy[prop] = valToSet;
+      if (parent) {
+        parent.copyParent();
+      }
+      return true;
+    },
+    deleteProperty(_target, prop) {
+      ensureCopy();
+      const success = Reflect.deleteProperty(copy, prop);
+      if (parent) {
+        parent.copyParent();
+      }
+      return success;
+    },
+    has(target, prop) {
+      return Reflect.has(copy || target, prop);
+    },
+    ownKeys(target) {
+      return Reflect.ownKeys(copy || target);
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return Reflect.getOwnPropertyDescriptor(copy || target, prop);
+    }
+  };
+
+  return new Proxy(base, handler);
 }
