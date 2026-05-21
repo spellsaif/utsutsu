@@ -122,4 +122,30 @@ describe("Lens Derived State", () => {
 
     unsubscribe();
   });
+
+  it("should re-subscribe to dependencies after a StrictMode-style remount (Active → Passive → Active)", () => {
+    // Simulates React StrictMode which mounts, unmounts, then remounts a component.
+    // If subscriptions are not re-established on the second mount, the lens will
+    // never receive change notifications and the UI will not update.
+    const cell = createCell(0);
+    const lens = new Lens("strict-mode-lens", () => cell.get() * 2);
+
+    const listener = vi.fn();
+
+    // First mount: subscribe (Active)
+    const unsubscribe1 = lens.subscribe(listener);
+
+    // Strict Mode immediately unmounts (Passive)
+    unsubscribe1();
+
+    // Strict Mode re-mounts (Active again)
+    const unsubscribe2 = lens.subscribe(listener);
+
+    // The lens must be reactive again — updating the cell should notify the listener
+    cell.set(5);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(lens.get()).toBe(10);
+
+    unsubscribe2();
+  });
 });

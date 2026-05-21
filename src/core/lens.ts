@@ -132,8 +132,11 @@ export class Lens<T> implements Dep {
       const oldMeta = oldDeps.get(dep);
       let unsubscribe = oldMeta?.unsubscribe || null;
 
-      // If active, and this is a newly discovered dependency, subscribe to it
-      if (isActivelySubscribed && !oldMeta) {
+      // If active, and we do not currently have a subscription to this dependency, subscribe to it.
+      // Note: we check !unsubscribe (not !oldMeta) so that dependencies that were tracked but had
+      // their subscription cleaned up during deactivate() (e.g. React StrictMode remounts) are
+      // correctly re-subscribed when the lens becomes Active again.
+      if (isActivelySubscribed && !unsubscribe) {
         unsubscribe = dep.subscribe(() => this.onDependencyChange());
       }
 
