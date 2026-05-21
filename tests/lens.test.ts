@@ -96,4 +96,30 @@ describe("Lens Derived State", () => {
     cell.set(30);
     expect(listener).toHaveBeenCalledTimes(1); // Still 1
   });
+
+  it("should support multi-lens graph dependency tracking (DAG)", () => {
+    const cell = createCell("Alice");
+    
+    // Lens 1 reads from Cell
+    const upperLens = new Lens("upper", () => cell.get().toUpperCase());
+    
+    // Lens 2 reads from Lens 1
+    const prefixLens = new Lens("prefix", () => `Hello, ${upperLens.get()}!`);
+
+    // Verify passive read
+    expect(prefixLens.get()).toBe("Hello, ALICE!");
+
+    // Subscribe to Lens 2 (Active mode)
+    const listener = vi.fn();
+    const unsubscribe = prefixLens.subscribe(listener);
+
+    // Update the base cell
+    cell.set("Bob");
+
+    // Both lenses should update, and the listener should be notified
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(prefixLens.get()).toBe("Hello, BOB!");
+
+    unsubscribe();
+  });
 });
