@@ -1,6 +1,7 @@
 "use client";
 
-import { useSyncExternalStore, useState, useEffect, useTransition } from "react";
+import React, { useSyncExternalStore, useState, useEffect, useTransition, createContext, useContext } from "react";
+import type { UtsutsuStore } from "../core/store.js";
 
 /**
  * Handle is the public interface representing read-only access
@@ -11,11 +12,42 @@ export interface Handle<T> {
   subscribe(listener: () => void): () => void;
 }
 
+export const UtsutsuContext = createContext<UtsutsuStore<any> | null>(null);
+
+export function UtsutsuProvider({
+  store,
+  children
+}: {
+  store: UtsutsuStore<any>;
+  children: React.ReactNode;
+}) {
+  return React.createElement(UtsutsuContext.Provider, { value: store }, children);
+}
+
+export function useUtsutsuStore<State = any>(): UtsutsuStore<State> {
+  const store = useContext(UtsutsuContext);
+  if (!store) {
+    throw new Error("useUtsutsuStore must be used within a UtsutsuProvider");
+  }
+  return store;
+}
+
 /**
- * Standard React hook to subscribe to any Utsutsu Handle (Cell or Lens).
+ * Standard React hook to subscribe to any Utsutsu Handle (Cell or Lens) or a selector function.
  * Leverages React's useSyncExternalStore for tear-free, synchronous updates.
  */
-export function useValue<T>(handle: Handle<T>): T {
+export function useValue<T>(
+  handleOrSelector: Handle<T> | ((store: UtsutsuStore<any>) => Handle<T>)
+): T {
+  const store = useContext(UtsutsuContext);
+  const handle = typeof handleOrSelector === "function"
+    ? (handleOrSelector as any)(store)
+    : handleOrSelector;
+
+  if (!handle) {
+    throw new Error("Handle not found or UtsutsuProvider is missing");
+  }
+
   return useSyncExternalStore(
     handle.subscribe,
     handle.get,
@@ -24,19 +56,28 @@ export function useValue<T>(handle: Handle<T>): T {
 }
 
 /**
- * Transition-safe React hook to subscribe to any Utsutsu Handle.
+ * Transition-safe React hook to subscribe to any Utsutsu Handle or selector function.
  * Runs state updates inside a React transition, preventing heavy derived Lens computations
  * from blocking the main UI thread during concurrent rendering.
  */
-export function useValueDeferred<T>(handle: Handle<T>): T {
+export function useValueDeferred<T>(
+  handleOrSelector: Handle<T> | ((store: UtsutsuStore<any>) => Handle<T>)
+): T {
+  const store = useContext(UtsutsuContext);
+  const handle = typeof handleOrSelector === "function"
+    ? (handleOrSelector as any)(store)
+    : handleOrSelector;
+
+  if (!handle) {
+    throw new Error("Handle not found or UtsutsuProvider is missing");
+  }
+
   const [value, setValue] = useState(() => handle.get());
   const [, startReactTransition] = useTransition();
 
   useEffect(() => {
     return handle.subscribe(() => {
       // Defer the state synchronization inside a React transition.
-      // This informs React that rendering this updated value is low-priority
-      // and can be deferred or split across frames.
       startReactTransition(() => {
         setValue(handle.get());
       });
