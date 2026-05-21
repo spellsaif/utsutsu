@@ -34,7 +34,11 @@ describe("DevTools Integration", () => {
       };
 
       const store = createUtsutsu({ count: 0 });
-      const increment = store.intent("increment", s => ({ ...s, count: s.count + 1 }));
+      const { increment } = store.intents({
+        increment: (draft) => {
+          draft.count++;
+        }
+      });
 
       const disconnect = connectDevTools(store, { name: "Test Store" });
 
