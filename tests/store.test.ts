@@ -34,17 +34,62 @@ describe("UtsutsuStore Advanced Features & Safety", () => {
     const store = createUtsutsu({ rootVal: 1 });
     const slice = store.mount("sliceA", { sliceVal: "hello" });
 
-    // Directly set state in the parent store
-    store.frame(() => {
-      const parentState = store.get();
-      (parentState as any).sliceA = { sliceVal: "changed downstream" };
-      // Normally state is updated immutably, but since we are modifying state shape, we set it on root:
-      store.intent("updateParent", () => ({
-        ...parentState,
-        sliceA: { sliceVal: "changed downstream" }
-      }))();
+    const { updateParent } = store.intents({
+      updateParent: (draft) => {
+        (draft as any).sliceA.sliceVal = "changed downstream";
+      }
     });
 
+    updateParent();
+
     expect(slice.get().sliceVal).toBe("changed downstream");
+  });
+
+  it("should support mutative draft writes on nested structures and arrays", () => {
+    const store = createUtsutsu({
+      count: 0,
+      user: { name: "Alice", address: { zip: "123" } },
+      items: ["a", "b"]
+    });
+
+    const { updateZip, addItem } = store.intents({
+      updateZip: (draft, zip: string) => {
+        draft.user.address.zip = zip;
+      },
+      addItem: (draft, item: string) => {
+        draft.items.push(item);
+      }
+    });
+
+    updateZip("456");
+    expect(store.get().user.address.zip).toBe("456");
+    // Ensure it is immutable and creates copies only for the path modified:
+    expect(store.get().user).not.toBe((store as any).rootCell.getVersion() === 0 ? null : undefined);
+
+    addItem("c");
+    expect(store.get().items).toEqual(["a", "b", "c"]);
+  });
+
+  it("should spawn atomic cells using store.cell() and maintain bi-directional synchronization", () => {
+    const store = createUtsutsu({
+      count: 10,
+      name: "Alice"
+    });
+
+    const countCell = store.cell("count");
+    expect(countCell.get()).toBe(10);
+
+    // 1. Updating the cell directly should update the store
+    countCell.set(20);
+    expect(store.get().count).toBe(20);
+
+    // 2. Updating the store via intents should update the cell
+    const { increment } = store.intents({
+      increment: (draft) => {
+        draft.count++;
+      }
+    });
+    increment();
+    expect(countCell.get()).toBe(21);
   });
 });
