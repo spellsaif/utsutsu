@@ -5,7 +5,7 @@ export { Lens } from "./core/lens.js";
 export { frame } from "./core/frame.js";
 
 // React bridge exports
-export { useValue, useValueDeferred } from "./react/index.js";
+export { useValue, useValueDeferred, UtsutsuProvider, useUtsutsuStore } from "./react/index.js";
 export type { Handle } from "./react/index.js";
 export type { Dep } from "./core/dependencyTracker.js";
 
