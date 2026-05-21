@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { createUtsutsu } from "../src/index.js";
+import { createUtsutsu, UtsutsuProvider } from "../src/index.js";
 import { useValue } from "../src/react/index.js";
 
 describe("React Integration", () => {
@@ -14,11 +14,14 @@ describe("React Integration", () => {
 
     // 2. Define lenses & intents
     const nameLens = store.lens("name", s => s.user.name);
-    const increment = store.intent("increment", s => ({ ...s, count: s.count + 1 }));
-    const rename = store.intent("rename", (s, nextName: string) => ({
-      ...s,
-      user: { ...s.user, name: nextName }
-    }));
+    const { increment, rename } = store.intents({
+      increment: (draft) => {
+        draft.count++;
+      },
+      rename: (draft, nextName: string) => {
+        draft.user.name = nextName;
+      }
+    });
 
     // 3. Define React Component
     let renderCount = 0;
@@ -58,7 +61,11 @@ describe("React Integration", () => {
     });
 
     const textLens = dynamicSlice.lens("text", s => s.text);
-    const updateText = dynamicSlice.intent("updateText", (s, text: string) => ({ ...s, text }));
+    const { updateText } = dynamicSlice.intents({
+      updateText: (draft, text: string) => {
+        draft.text = text;
+      }
+    });
 
     function Editor() {
       const text = useValue(textLens);
@@ -78,5 +85,51 @@ describe("React Integration", () => {
 
     // Parent store should have combined state
     expect((store.get() as any).dynamic.text).toBe("world");
+  });
+
+  it("should support UtsutsuProvider and resolve handles dynamically using selector functions", () => {
+    const store = createUtsutsu({
+      todos: [
+        { id: 1, text: "Buy milk", done: false }
+      ]
+    });
+
+    const { toggleTodo } = store.intents({
+      toggleTodo: (draft, id: number) => {
+        const todo = draft.todos.find(t => t.id === id);
+        if (todo) {
+          todo.done = !todo.done;
+        }
+      }
+    });
+
+    // Pre-register lens in the store cache
+    store.lens("todos", s => s.todos);
+
+    function TodoApp() {
+      // Resolve lens dynamically via selector from Context
+      const todos = useValue(s => s.lens("todos")) as any;
+      return (
+        <div>
+          {todos.map((todo: any) => (
+            <span key={todo.id} data-testid={`todo-${todo.id}`}>
+              {todo.text} - {todo.done ? "Done" : "Pending"}
+            </span>
+          ))}
+          <button data-testid="btn-toggle" onClick={() => toggleTodo(1)}>Toggle</button>
+        </div>
+      );
+    }
+
+    const { getByTestId } = render(
+      <UtsutsuProvider store={store}>
+        <TodoApp />
+      </UtsutsuProvider>
+    );
+
+    expect(getByTestId("todo-1").textContent).toBe("Buy milk - Pending");
+
+    fireEvent.click(getByTestId("btn-toggle"));
+    expect(getByTestId("todo-1").textContent).toBe("Buy milk - Done");
   });
 });
