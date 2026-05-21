@@ -43,7 +43,7 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container hero-content">
-      <span class="badge-tag">Waking State Engine • Version 0.1.0</span>
+      <span class="badge-tag">Waking State Engine • Version 0.2.0</span>
       <h1 class="gradient-text">Unidirectional Flow.<br>Surgical Reactive Speed.</h1>
       <p class="hero-subtitle">
         Utsutsu brings the raw efficiency of Signals to React, wrapped inside a predictable, unidirectional Redux-style intent design. Fully type-safe and under 1.5kB.
@@ -239,11 +239,21 @@ const store = createUtsutsu({
   logs: 2
 });
 
-// Break Veldora Seal (Frame transaction)
-function breakVeldoraSeal() {
+// Register mutative intents
+const { breakSeal, addSystemLog } = store.intents({
+  breakSeal(draft) {
+    draft.sealBroken = true;
+    draft.party.push({ name: "Veldora Tempest", level: 99, hp: 9999, mp: 100 });
+  },
+  addSystemLog(draft, message) {
+    draft.logs += 1;
+  }
+});
+
+// Coordinated update transaction frame
+function triggerSealRelease() {
   frame(() => {
-    setSealBroken(true);
-    addVeldoraToParty();
+    breakSeal();
     addSystemLog("Dragon Veldora has awakened!");
   }); // Subscribed UI updates exactly once
 }
@@ -315,10 +325,11 @@ export const store = createUtsutsu({
 export const countLens = store.lens("count", s => s.count);
 
 // 3. Declare intents for updating
-export const increment = store.intent("increment", (state, amount: number = 1) => ({
-  ...state,
-  count: state.count + amount
-}));
+export const { increment } = store.intents({
+  increment(draft, amount: number = 1) {
+    draft.count += amount;
+  }
+});
               </code></pre>
 
               <p>Then, connect the lens inside a React component using the `useValue` hook:</p>
@@ -367,10 +378,11 @@ const activeItemsLens = store.lens("active", state =>
               <h3>5. Intents (Explicit Updates)</h3>
               <p>Intents represent deliberate state updates. Unlike Redux where actions and reducers are defined separately, Utsutsu defines them together in a single, type-safe definition:</p>
               <pre><code class="language-typescript">
-export const changeUsername = store.intent("setName", (state, name: string) => ({
-  ...state,
-  username: name
-}));
+export const { changeUsername } = store.intents({
+  changeUsername(draft, name: string) {
+    draft.username = name;
+  }
+});
               </code></pre>
 
               <h4>Handling Side Effects</h4>
@@ -460,20 +472,25 @@ export const grandTotalLens = store.lens("grandTotal", s => {
 });
 
 // Intents
-export const addItem = store.intent("add", (s, item: CartItem) => {
-  const index = s.items.findIndex(i => i.id === item.id);
-  if (index > -1) {
-    const updated = [...s.items];
-    updated[index].qty += 1;
-    return { ...s, items: updated };
+export const { add: addItem, remove: removeOne } = store.intents({
+  add(draft, item: CartItem) {
+    const existing = draft.items.find(i => i.id === item.id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      draft.items.push(item);
+    }
+  },
+  remove(draft, id: string) {
+    const existing = draft.items.find(i => i.id === id);
+    if (existing) {
+      existing.qty -= 1;
+      if (existing.qty <= 0) {
+        draft.items = draft.items.filter(i => i.id !== id);
+      }
+    }
   }
-  return { ...s, items: [...s.items, item] };
 });
-
-export const removeOne = store.intent("remove", (s, id: string) => ({
-  ...s,
-  items: s.items.map(i => i.id === id ? { ...i, qty: i.qty - 1 } : i).filter(i => i.qty > 0)
-}));
               </code></pre>
             </article>
 
@@ -496,22 +513,19 @@ const store = createUtsutsu&lt;BattleState&gt;({
 });
 
 // Intents
-export const damageHero = store.intent("damage", (s, index: number, hpLoss: number) => {
-  const squad = [...s.squad];
-  squad[index] = { ...squad[index], hp: Math.max(0, squad[index].hp - hpLoss) };
-  return { ...s, squad };
+export const { damage: damageHero, spendMp: useMana, log: writeLog } = store.intents({
+  damage(draft, index: number, hpLoss: number) {
+    const hero = draft.squad[index];
+    if (hero) hero.hp = Math.max(0, hero.hp - hpLoss);
+  },
+  spendMp(draft, index: number, mpLoss: number) {
+    const hero = draft.squad[index];
+    if (hero) hero.mp = Math.max(0, hero.mp - mpLoss);
+  },
+  log(draft, msg: string) {
+    draft.battleLog.push(msg);
+  }
 });
-
-export const useMana = store.intent("spendMp", (s, index: number, mpLoss: number) => {
-  const squad = [...s.squad];
-  squad[index] = { ...squad[index], mp: Math.max(0, squad[index].mp - mpLoss) };
-  return { ...s, squad };
-});
-
-export const writeLog = store.intent("log", (s, msg: string) => ({
-  ...s,
-  battleLog: [...s.battleLog, msg]
-}));
 
 // Coordinated Round execution
 export function executeSpellRound() {
@@ -551,10 +565,11 @@ export const formErrorLens = store.lens("errors", s => {
 });
 
 // Intents
-export const setField = store.intent("setField", (s, key: "email" | "password", value: string) => ({
-  ...s,
-  [key]: value
-}));
+export const { setField } = store.intents({
+  setField(draft, key: "email" | "password", value: string) {
+    draft[key] = value;
+  }
+});
               </code></pre>
             </article>
 
@@ -611,16 +626,25 @@ const userStore = createPersistentStore("app-user-session", {
               <p>Initializes a new state store instance.</p>
               <pre><code class="language-typescript">
 interface UtsutsuStore&lt;T&gt; {
-  state: T;
+  // Get current state
+  get(): T;
   
   // Define derived cache lens
   lens&lt;V&gt;(name: string, selector: (state: T) => V): Lens&lt;V&gt;;
   
-  // Define update intent
-  intent&lt;A extends any[]&gt;(
-    name: string, 
-    mutator: (state: T, ...args: A) => T
-  ): (...args: A) => void;
+  // Define update intents as a key-value object of mutative draft handlers
+  intents&lt;
+    Handlers extends { [key: string]: (draft: T, ...args: any[]) => void }
+  &gt;(
+    handlers: Handlers
+  ): {
+    [K in keyof Handlers]: Handlers[K] extends (draft: T, ...args: infer Args) => void
+      ? (...args: Args) => void
+      : never;
+  };
+
+  // Spawn sub-cell tied to parent key
+  cell&lt;K extends keyof T&gt;(key: K): Cell&lt;T[K]&gt;;
   
   // Subscribe listener to state updates
   subscribe(listener: () => void): () => void;
